@@ -51,8 +51,7 @@ public class ProcessLogicalTable {
 		Element tripmapBlockElem = (Element) tripmapStatementElem.getFirstChild();
 
 		if(tripmapBlockElem.hasAttribute("type") && (tripmapBlockElem.getAttribute("type").equalsIgnoreCase("triplesmap"))){
-			
-			System.out.println("Getting into " + tripmapBlockElem.getAttribute("type"));
+
 			
 			/*
 			 * Create a logical table statement element for this triplesmap

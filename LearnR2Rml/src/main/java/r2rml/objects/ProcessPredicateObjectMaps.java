@@ -1,8 +1,11 @@
 package r2rml.objects;
 
+import java.util.List;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import r2rml.model.PredicateObjectMap;
 import r2rml.model.TriplesMap;
 
 public class ProcessPredicateObjectMaps {
@@ -18,6 +21,11 @@ public class ProcessPredicateObjectMaps {
 	}
 
 	public Document processPredicateObjectMaps(TriplesMap tmap, Element tripmapStatementElem) {
+		
+		
+		
+		List<PredicateObjectMap> pom = tmap.getPredicateObjectMaps();
+		
 		
 		
 		

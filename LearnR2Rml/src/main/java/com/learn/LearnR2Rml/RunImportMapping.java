@@ -50,9 +50,14 @@ public class RunImportMapping {
 
 		
 		String mappingFile = "";
-		mappingFile = "/home/lavinpe/workspace/r2rml-editor/example_2.ttl";
-		//mappingFile = "/home/lavinpe/workspace/r2rml-editor/cso_has_sql.ttl";
+		mappingFile = "/home/lavinpe/workspace/r2rml-editor/samples/example_2.ttl";
+		mappingFile = "/home/lavinpe/workspace/r2rml-editor/samples/cso_has_sql.ttl";
+		mappingFile = "/home/lavinpe/workspace/r2rml-editor/samples/2_tm_with_class_iri.ttl";
+		mappingFile = "/home/lavinpe/workspace/r2rml-editor/samples/3_tms_class_iri_none.ttl";
+		mappingFile = "/home/lavinpe/workspace/r2rml-editor/samples/4_tms_class_iri_blank_none.ttl";
 		
+		mappingFile = "/home/lavinpe/workspace/r2rml-editor/samples/various_testing.ttl";
+															
 		
 		
 		/*
@@ -73,6 +78,7 @@ public class RunImportMapping {
 		 */
 		
 		Map<String, String> pmap = null;
+		
 		for(Resource tm0 : resMap.keySet()){
 			pmap = tm0.getModel().getNsPrefixMap();			
 			break;
@@ -109,6 +115,24 @@ public class RunImportMapping {
 		
 		
 		
+/*
+ * Un/comment for printing		
+ */
+	
+		System.out.println("\nFINAL DOCUMENT...\n");
+		PrettyPrintXML.printDocument(xml);
+
+	
+	
+	
+		System.exit(0);	
+		
+		
+		
+		
+		
+		
+		
 		
 		
 		for(Resource i : resMap.keySet()) {
@@ -121,37 +145,8 @@ public class RunImportMapping {
 			 * Get the Name of the triplesmap
 			 */
 			System.out.println("TRIPLEMAPNAME in XML " + i.getLocalName());
-					
-
-
-			
-		
-			
-			/*
-			 * TODO, up to subject maps are complete, next up... pred obj map(s)
-			 * and their sub-parts.
-			 * 
-			 * ==========================================================================
-			 */
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			
 			
 			System.out.println();
-			
-
-			
 			System.out.println();
 			
 			
@@ -181,9 +176,12 @@ public class RunImportMapping {
 				
 				for(PredicateMap pm: pmList){
 					
-					/*
-					 * XML XML XML XML XML XML XML XML XML XML XML XML Make the PM emement/node here and populate
-					 */
+					
+					
+					
+					
+					
+					
 					
 					/*
 					 * As above, predicate object maps also may be of type 
@@ -289,26 +287,11 @@ public class RunImportMapping {
 		
 		
 		
-		try {
-			PrettyPrintXML.printXml(xml);
-		} catch (TransformerException e) {
-			e.printStackTrace();
-		}
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		System.exit(0);
+
 	
 
 		
-		String mappingFile2 = "/home/lavinpe/workspace/r2rml-editor/example_2.ttl";
+		String mappingFile2 = "/home/lavinpe/workspace/r2rml-editor/samples/samplesexample_2.ttl";
 		
 		// We reason over the mapping to facilitate retrieval of the mappings
 		Model data = FileManager.get().loadModel(mappingFile);

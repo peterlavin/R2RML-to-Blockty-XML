@@ -7,6 +7,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import r2rml.constants.CONST;
+
 public class EmptyXMLDocument {
 	
 	public EmptyXMLDocument(){
@@ -31,13 +33,13 @@ public class EmptyXMLDocument {
 		Document emptyXMLdoc = documentBuilder.newDocument();
 		
 		// TODO get constants for this...
-		Element nsElem = emptyXMLdoc.createElementNS("http://www.w3.org/1999/xhtml", "xml");
+		Element nsElem = emptyXMLdoc.createElementNS(CONST.W3_NS, CONST.XML);
+			
+		Element rootBlockElement = emptyXMLdoc.createElement(CONST.BLOCK);
 		
-		Element rootBlockElement = emptyXMLdoc.createElement("block");
+		rootBlockElement.setAttribute(CONST.DELETABLE, CONST.FALSE);
 		
-		rootBlockElement.setAttribute("deletable", "false");
-		
-		rootBlockElement.setAttribute("type", "mapping");
+		rootBlockElement.setAttribute(CONST.TYPE, CONST.MAPPING);
 		
 		nsElem.appendChild(rootBlockElement);
 		

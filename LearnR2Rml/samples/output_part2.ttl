@@ -1,0 +1,100 @@
+<http://data.example.org/city/Seattle>
+        a       <http://xmlns.com/foaf/0.1/Spatial_Thing> ;
+        <http://www.w3.org/2000/01/rdf-schema#label>
+                "Seattle" .
+
+<http://data.example.org/employee/3>
+        a       <http://xmlns.com/foaf/0.1/Person> ;
+        <http://xmlns.com/foaf/0.1/familyName>
+                "Kotas" ;
+        <http://xmlns.com/foaf/0.1/givenName>
+                "Jan" ;
+        <http://xmlns.com/foaf/0.1/name>
+                "Kotas, Jan" .
+
+<http://data.example.org/employee/8>
+        a       <http://xmlns.com/foaf/0.1/Person> ;
+        <http://xmlns.com/foaf/0.1/familyName>
+                "Giussani" ;
+        <http://xmlns.com/foaf/0.1/givenName>
+                "Laura" ;
+        <http://xmlns.com/foaf/0.1/name>
+                "Giussani, Laura" .
+
+<http://data.example.org/city/Kirkland>
+        a       <http://xmlns.com/foaf/0.1/Spatial_Thing> ;
+        <http://www.w3.org/2000/01/rdf-schema#label>
+                "Kirkland" .
+
+<http://data.example.org/employee/1>
+        a       <http://xmlns.com/foaf/0.1/Person> ;
+        <http://xmlns.com/foaf/0.1/familyName>
+                "Freehafer" ;
+        <http://xmlns.com/foaf/0.1/givenName>
+                "Nancy" ;
+        <http://xmlns.com/foaf/0.1/name>
+                "Freehafer, Nancy" .
+
+<http://data.example.org/employee/6>
+        a       <http://xmlns.com/foaf/0.1/Person> ;
+        <http://xmlns.com/foaf/0.1/familyName>
+                "Neipper" ;
+        <http://xmlns.com/foaf/0.1/givenName>
+                "Michael" ;
+        <http://xmlns.com/foaf/0.1/name>
+                "Neipper, Michael" .
+
+<http://data.example.org/employee/4>
+        a       <http://xmlns.com/foaf/0.1/Person> ;
+        <http://xmlns.com/foaf/0.1/familyName>
+                "Sergienko" ;
+        <http://xmlns.com/foaf/0.1/givenName>
+                "Mariya" ;
+        <http://xmlns.com/foaf/0.1/name>
+                "Sergienko, Mariya" .
+
+<http://data.example.org/employee/9>
+        a       <http://xmlns.com/foaf/0.1/Person> ;
+        <http://xmlns.com/foaf/0.1/familyName>
+                "Hellung-Larsen" ;
+        <http://xmlns.com/foaf/0.1/givenName>
+                "Anne" ;
+        <http://xmlns.com/foaf/0.1/name>
+                "Hellung-Larsen, Anne" .
+
+<http://data.example.org/city/Bellevue>
+        a       <http://xmlns.com/foaf/0.1/Spatial_Thing> ;
+        <http://www.w3.org/2000/01/rdf-schema#label>
+                "Bellevue" .
+
+<http://data.example.org/employee/2>
+        a       <http://xmlns.com/foaf/0.1/Person> ;
+        <http://xmlns.com/foaf/0.1/familyName>
+                "Cencini" ;
+        <http://xmlns.com/foaf/0.1/givenName>
+                "Andrew" ;
+        <http://xmlns.com/foaf/0.1/name>
+                "Cencini, Andrew" .
+
+<http://data.example.org/employee/7>
+        a       <http://xmlns.com/foaf/0.1/Person> ;
+        <http://xmlns.com/foaf/0.1/familyName>
+                "Zare" ;
+        <http://xmlns.com/foaf/0.1/givenName>
+                "Robert" ;
+        <http://xmlns.com/foaf/0.1/name>
+                "Zare, Robert" .
+
+<http://data.example.org/city/Redmond>
+        a       <http://xmlns.com/foaf/0.1/Spatial_Thing> ;
+        <http://www.w3.org/2000/01/rdf-schema#label>
+                "Redmond" .
+
+<http://data.example.org/employee/5>
+        a       <http://xmlns.com/foaf/0.1/Person> ;
+        <http://xmlns.com/foaf/0.1/familyName>
+                "Thorpe" ;
+        <http://xmlns.com/foaf/0.1/givenName>
+                "Steven" ;
+        <http://xmlns.com/foaf/0.1/name>
+                "Thorpe, Steven" .

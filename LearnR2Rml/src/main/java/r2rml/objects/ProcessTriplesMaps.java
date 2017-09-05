@@ -6,6 +6,7 @@ import org.apache.jena.rdf.model.Resource;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import r2rml.constants.CONST;
 import r2rml.model.TriplesMap;
 
 public class ProcessTriplesMaps {
@@ -19,7 +20,7 @@ public class ProcessTriplesMaps {
 	}
 
 	public Document processTriplesMaps(Map<Resource, TriplesMap> resMap) {
-
+		
 		for (Resource res : resMap.keySet()) {
 
 			System.out.println(" +++ Processing " + res.getLocalName() + " +++\n");
@@ -47,6 +48,10 @@ public class ProcessTriplesMaps {
 			ProcessSubjectMap psm = new ProcessSubjectMap(xml);
 
 			psm.processSubjectMap(tmap, tripmapStatementElem);
+			
+			/*
+			 * And then, Predicate Object Maps
+			 */
 
 			ProcessPredicateObjectMaps ppom = new ProcessPredicateObjectMaps(xml);
 
@@ -69,24 +74,24 @@ public class ProcessTriplesMaps {
 
 	private Element createEmptyTripMapElement(String triplesMapLocalName) {
 
-		Element tripmapStatementElem = xml.createElement("statement");
-		tripmapStatementElem.setAttribute("name", "triplesmap");
+		Element tripmapStatementElem = xml.createElement(CONST.STATEMENT);
+		tripmapStatementElem.setAttribute(CONST.NAME, CONST.TRIPLESMAP);
 
 		/*
 		 * Create a block element of type triplesmap and append to
 		 * tripmapStatementElem Logical table, subj map and pred-obj map for
 		 * this triplesmap all go in this element
 		 */
-		Element tripmapBlockElem = xml.createElement("block");
-		tripmapBlockElem.setAttribute("type", "triplesmap");
+		Element tripmapBlockElem = xml.createElement(CONST.BLOCK);
+		tripmapBlockElem.setAttribute(CONST.TYPE, CONST.TRIPLESMAP);
 		tripmapStatementElem.appendChild(tripmapBlockElem);
 
 		/*
 		 * Create a field element with attr name=TRIPLEMAPNAME, then append a
 		 * text node to it containing the local name text argument
 		 */
-		Element tmapBlockFieldElm = xml.createElement("field");
-		tmapBlockFieldElm.setAttribute("name", "TRIPLEMAPNAME");
+		Element tmapBlockFieldElm = xml.createElement(CONST.FIELD);
+		tmapBlockFieldElm.setAttribute(CONST.NAME, CONST.TRIPLEMAPNAME_UC);
 		tmapBlockFieldElm.appendChild(xml.createTextNode(triplesMapLocalName));
 		tripmapBlockElem.appendChild(tmapBlockFieldElm);
 

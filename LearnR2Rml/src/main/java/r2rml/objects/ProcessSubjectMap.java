@@ -10,6 +10,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import r2rml.constants.CONST;
 import r2rml.model.SubjectMap;
 import r2rml.model.TriplesMap;
 import xmlutilities.PrettyPrintXML;
@@ -37,17 +38,17 @@ public class ProcessSubjectMap {
 		 */
 		if (subjmap.isTemplateValuedTermMap()) {
 
-			termMapTypeStr = "TEMPLATE";
+			termMapTypeStr = CONST.TEMPLATE_UC;
 			termMapVariableStr = subjmap.getTemplate().toString();
 
 		} else if (subjmap.isColumnValuedTermMap()) {
 
-			termMapTypeStr = "COLUMN";
+			termMapTypeStr = CONST.COLUMN_UC;
 			termMapVariableStr = subjmap.getColumn();
 
 		} else if (subjmap.isConstantValuedTermMap()) {
 
-			termMapTypeStr = "CONSTANT";
+			termMapTypeStr = CONST.CONSTANT_UC;
 			termMapVariableStr = subjmap.getConstant().toString();
 
 		} else {
@@ -63,7 +64,7 @@ public class ProcessSubjectMap {
 		 * particular triplesmap. The subject map statement element and its
 		 * parts need to be inserted into the triplesmap block element within
 		 * this statement element
-		 */
+		 */	
 		insertBasicSubjMap(tripmapStatementElem, termMapTypeStr, termMapVariableStr);
 
 		/*
@@ -82,20 +83,17 @@ public class ProcessSubjectMap {
 
 		Element tripMapBlockElem = (Element) tripmapStatementElem.getFirstChild();
 
-		//////////// PrettyPrintXML.printElement(tripmapStatementElem);
-		//////////// PrettyPrintXML.printElement(tripMapBlockElem);
-
 		/*
 		 * Get all the statement Elements in this, there may be ones for
 		 * logicaltable and subjectmap at this point
 		 */
-		NodeList nodeList = tripMapBlockElem.getElementsByTagName("statement");
+		NodeList nodeList = tripMapBlockElem.getElementsByTagName(CONST.STATEMENT);
 
 		Element subjMapStatementElm = null;
 		for (int i = 0; i < nodeList.getLength(); i++) {
 
 			Element e = (Element) nodeList.item(i);
-			if (e.getAttribute("name").equals("subjectmap")) {
+			if (e.getAttribute(CONST.NAME).equals(CONST.SUBJECTMAP)) {
 				subjMapStatementElm = e;
 				break;
 			}
@@ -103,14 +101,23 @@ public class ProcessSubjectMap {
 		}
 
 		/*
-		 * ProcessTermMap is called, even if not needed, this
-		 * is determined in the ProcessTermMap class.
+		 * ProcessTermMap is called, even if not needed, this is determined in
+		 * the ProcessTermMap class.
 		 */
 		ProcessSmTermMap ptm = new ProcessSmTermMap(xml);
 		ptm.processTermMap(subjMapStatementElm, subjmap);
 
 		System.out.println("FINAL TRIPLESMAP STATEMENT...");
 		PrettyPrintXML.printElement(tripmapStatementElem);
+		
+		/*
+		 * ProcessSmGraphMap is called, the required actions (if any)
+		 * are determined in the ProcessSmGraphMap class. 
+		 */
+		
+		ProcessSmGraphMap pgm = new ProcessSmGraphMap(xml);
+		
+		pgm.processSmGraphMap(subjMapStatementElm, subjmap);
 
 	}
 
@@ -125,22 +132,22 @@ public class ProcessSubjectMap {
 		 */
 
 		// TERMMAP field, <field name="TERMMAP">XXXXXXXX</field>
-		Element fieldElementTermMap = xml.createElement("field");
-		fieldElementTermMap.setAttribute("name", "TERMMAP");
+		Element fieldElementTermMap = xml.createElement(CONST.FIELD);
+		fieldElementTermMap.setAttribute(CONST.NAME, CONST.TERMMAP_UC);
 		fieldElementTermMap.appendChild(xml.createTextNode(termMapTypeStr));
 
 		// TERMMAPVALUE field, <field
 		// name="TERMMAPVALUE">http://example.com/example/{ex}</field>
 		Element subjectMapFieldElementTermMapValue = xml.createElement("field");
-		subjectMapFieldElementTermMapValue.setAttribute("name", "TERMMAPVALUE");
+		subjectMapFieldElementTermMapValue.setAttribute(CONST.NAME, CONST.TERMMAPVALUE_UC);
 		subjectMapFieldElementTermMapValue.appendChild(xml.createTextNode(termMapVariableStr));
 
 		/*
 		 * Create a subject block element to hold the above elements as they are
 		 * always present, later additions may not
 		 */
-		Element blockElementSubjMap = xml.createElement("block");
-		blockElementSubjMap.setAttribute("type", "subjectmap");
+		Element blockElementSubjMap = xml.createElement(CONST.BLOCK);
+		blockElementSubjMap.setAttribute(CONST.TYPE, CONST.SUBJECTMAP);
 		blockElementSubjMap.appendChild(fieldElementTermMap);
 		blockElementSubjMap.appendChild(subjectMapFieldElementTermMapValue);
 
@@ -148,8 +155,8 @@ public class ProcessSubjectMap {
 		 * Create a subjectmap statement to hold all of the above
 		 */
 
-		Element subjectMapStatementElement = xml.createElement("statement");
-		subjectMapStatementElement.setAttribute("name", "subjectmap");
+		Element subjectMapStatementElement = xml.createElement(CONST.STATEMENT);
+		subjectMapStatementElement.setAttribute(CONST.NAME, CONST.SUBJECTMAP);
 		subjectMapStatementElement.appendChild(blockElementSubjMap);
 
 		/*

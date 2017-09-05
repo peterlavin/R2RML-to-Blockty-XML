@@ -1,0 +1,69 @@
+# Mapping created using R2RML editor.
+  @prefix rr: <http://www.w3.org/ns/r2rml#> .
+  @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+  @prefix peter: <http://peter.com/peter/0.1/> .
+
+  <#TripleMap1>
+  rr:logicalTable [
+    rr:tableName "employees";
+  ];
+     rr:subjectMap [
+      rr:template "http://data.example.org/employee/{id}";
+      rr:termType rr:IRI;
+    ];
+
+     rr:predicateObjectMap [
+      rr:predicateMap [
+        rr:constant foaf:name;
+        rr:termType rr:IRI;
+      ];
+
+       rr:objectMap [
+        rr:column "first_name";
+      ];
+
+     ];
+   .
+
+  <#TripleMap2>
+  rr:logicalTable [
+    rr:sqlQuery """SELECT *.* FROM BIGTABLE""";
+  ];
+     rr:subjectMap [
+      rr:column "http://anotherexample.org/{id}";
+      rr:class peter:testname;
+    ];
+
+     rr:predicateObjectMap [
+      rr:predicateMap [
+        rr:template "foaf:name";
+        rr:termType rr:IRI;
+      ];
+
+       rr:objectMap [
+        rr:template "data_blah";
+      ];
+
+     ];
+   .
+
+  <#TripleMap3>
+  rr:logicalTable [
+    rr:sqlQuery """SELECT *.* FROM BIGTABLE""";
+  ];
+     rr:subjectMap [
+      rr:column "http://yetanotherexample.org/{id}";
+    ];
+
+     rr:predicateObjectMap [
+      rr:predicateMap [
+        rr:template "foaf:name";
+        rr:termType rr:IRI;
+      ];
+
+       rr:objectMap [
+        rr:template "data_blah";
+      ];
+
+     ];
+   .

@@ -8,6 +8,7 @@ import org.apache.jena.rdf.model.Resource;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import r2rml.constants.CONST;
 import r2rml.model.SubjectMap;
 
 import xmlutilities.PrettyPrintXML;
@@ -118,8 +119,8 @@ public class ProcessSmTermMap {
 			/*
 			 * All of the above class block(s) need to be in a statement element
 			 */
-			Element termMapStatement = xml.createElement("statement");
-			termMapStatement.setAttribute("name", "termmap");
+			Element termMapStatement = xml.createElement(CONST.STATEMENT);
+			termMapStatement.setAttribute(CONST.NAME, CONST.TERMMAP);
 			termMapStatement.appendChild(classBlocksElm);
 
 			/*
@@ -142,19 +143,19 @@ public class ProcessSmTermMap {
 		 * First create the term type block
 		 */
 
-		Element subjectTermTypeFieldElement = xml.createElement("field");
-		subjectTermTypeFieldElement.setAttribute("name", "TERMTYPE");
+		Element subjectTermTypeFieldElement = xml.createElement(CONST.FIELD);
+		subjectTermTypeFieldElement.setAttribute(CONST.NAME, CONST.TERMTYPE_UC);
 
 		/*
 		 * Determine the type of the term, IRI by default, but may be a blank
 		 * node
 		 */
-		String termTypeVar = subjmap.isTermTypeIRI() ? "termtypeiri" : "termtypeBlankNode";
+		String termTypeVar = subjmap.isTermTypeIRI() ? CONST.TERMTYPE_IRI : CONST.TERMTYPE_BN;
 
 		subjectTermTypeFieldElement.appendChild(xml.createTextNode(termTypeVar));
 
-		Element termTypeBlockElement = xml.createElement("block");
-		termTypeBlockElement.setAttribute("type", "subjecttermtype");
+		Element termTypeBlockElement = xml.createElement(CONST.BLOCK);
+		termTypeBlockElement.setAttribute(CONST.TYPE, CONST.SUBJECTTERMTYPE);
 
 		termTypeBlockElement.appendChild(subjectTermTypeFieldElement);
 		
@@ -167,13 +168,13 @@ public class ProcessSmTermMap {
 		 */
 		String classPrefixName = getClassPrefix(subjectMapClass);
 
-		Element classField = xml.createElement("field");
-		classField.setAttribute("name", "CLASS");
+		Element classField = xml.createElement(CONST.FIELD);
+		classField.setAttribute(CONST.NAME, CONST.CLASS_UC);
 		classField.appendChild(xml.createTextNode(classPrefixName));
 
 		// Create block of type 'class' and add a field of name 'class' to it
-		Element termMapBlock = xml.createElement("block");
-		termMapBlock.setAttribute("type", "class");
+		Element termMapBlock = xml.createElement(CONST.BLOCK);
+		termMapBlock.setAttribute(CONST.TYPE, CONST.CLASS);
 
 		termMapBlock.appendChild(classField);
 		
@@ -192,7 +193,7 @@ public class ProcessSmTermMap {
 	 */
 	private Element putClassBlkInNext(Element blockElm) {
 
-		Element nextElement = xml.createElement("next");
+		Element nextElement = xml.createElement(CONST.NEXT);
 
 		nextElement.appendChild(blockElm);
 
@@ -209,26 +210,26 @@ public class ProcessSmTermMap {
 		 * name termmap.
 		 */
 
-		Element subjectTermTypeFieldElement = xml.createElement("field");
-		subjectTermTypeFieldElement.setAttribute("name", "TERMTYPE");
+		Element subjectTermTypeFieldElement = xml.createElement(CONST.FIELD);
+		subjectTermTypeFieldElement.setAttribute(CONST.NAME, CONST.TERMMAP_UC);
 
 		/*
 		 * Determine the type of the term, IRI by default, but may be a blank
 		 * node
 		 */
-		String termTypeVar = subjmap.isTermTypeIRI() ? "termtypeiri" : "termtypeBlankNode";
+		String termTypeVar = subjmap.isTermTypeIRI() ? CONST.TERMTYPE_IRI : CONST.TERMTYPE_BN;
 
 		subjectTermTypeFieldElement.appendChild(xml.createTextNode(termTypeVar));
 
-		Element termTypeBlockElement = xml.createElement("block");
-		termTypeBlockElement.setAttribute("type", "subjecttermtype");
+		Element termTypeBlockElement = xml.createElement(CONST.BLOCK);
+		termTypeBlockElement.setAttribute(CONST.TYPE, CONST.SUBJECTTERMTYPE);
 
 		termTypeBlockElement.appendChild(subjectTermTypeFieldElement);
 
 		// Create a stamement block to surround these and append the above as a
 		// child
-		Element termMapStatementElement = xml.createElement("statement");
-		termMapStatementElement.setAttribute("name", "termmap");
+		Element termMapStatementElement = xml.createElement(CONST.STATEMENT);
+		termMapStatementElement.setAttribute(CONST.NAME, CONST.TERMMAP);
 		termMapStatementElement.appendChild(termTypeBlockElement);
 
 		return termMapStatementElement;
@@ -246,6 +247,8 @@ public class ProcessSmTermMap {
 		Map<String, String> pmap = (Map<String, String>) subjectClass.getModel().getNsPrefixMap();
 
 		for (Entry<String, String> value : pmap.entrySet()) {
+			
+			System.out.println(value.getValue() + "\n" + subjectClass.getNameSpace() + "\n");
 
 			if (value.getValue().equals(subjectClass.getNameSpace())) {
 
@@ -266,15 +269,17 @@ public class ProcessSmTermMap {
 
 		String classPrefixName = getClassPrefix(subjmapClass);
 
-		Element classField = xml.createElement("field");
-		classField.setAttribute("name", "CLASS");
+		Element classField = xml.createElement(CONST.FIELD);
+		classField.setAttribute(CONST.NAME, CONST.CLASS_UC);
 		classField.appendChild(xml.createTextNode(classPrefixName));
 
 		// Create block of type 'class' and add a field of name 'class' to it
-		Element termMapBlock = xml.createElement("block");
-		termMapBlock.setAttribute("type", "class");
+		Element termMapBlock = xml.createElement(CONST.BLOCK);
+		termMapBlock.setAttribute(CONST.TYPE, CONST.CLASS);
 
 		termMapBlock.appendChild(classField);
+		
+		PrettyPrintXML.printElement(termMapBlock);
 
 		return termMapBlock;
 	}

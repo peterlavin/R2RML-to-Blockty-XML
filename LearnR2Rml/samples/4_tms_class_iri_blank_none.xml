@@ -1,0 +1,173 @@
+<xml xmlns="http://www.w3.org/1999/xhtml">
+  <block type="mapping" id="P-;|9)-p3xoJ@.t+K{Q?" deletable="false" x="9" y="3">
+    <statement name="mapping">
+      <block type="prefix" id="G@A7h5^=46#ze`4ay++R">
+        <field name="PREFIX">foaf</field>
+        <field name="URI">http://xmlns.com/foaf/0.1/</field>
+        <next>
+          <block type="prefix" id=".=CAWmZ~+;MwI4=)M.%L">
+            <field name="PREFIX">peter</field>
+            <field name="URI">http://peter.com/peter/0.1/</field>
+          </block>
+        </next>
+      </block>
+    </statement>
+    <statement name="triplesmap">
+      <block type="triplemap" id="XHjSP6U+5Qmx`sNj}yZW">
+        <field name="TRIPLEMAPNAME">TripleMap1</field>
+        <statement name="logicaltable">
+          <block type="tablesqlquery" id="pQPs.bJ=Bs;zodedxdEe">
+            <mutation sql="employees"/>
+            <field name="TABLESQLQUERY">table</field>
+          </block>
+        </statement>
+        <statement name="subjectmap">
+          <block type="subjectmap" id="0K:N,b9}FKH%yv`244{p">
+            <field name="TERMMAP">TEMPLATE</field>
+            <field name="TERMMAPVALUE">http://data.example.org/employee/{id}</field>
+            <statement name="termmap">
+              <block type="class" id="BD}V0e74m-gNrm!s%1M9">
+                <field name="CLASS">foaf:Person</field>
+                <next>
+                  <block type="subjecttermtype" id="n@qYD0bS%aC(N5gO/WjD">
+                    <field name="TERMTYPE">termtypeiri</field>
+                  </block>
+                </next>
+              </block>
+            </statement>
+          </block>
+        </statement>
+        <statement name="predicateobjectmap">
+          <block type="predicateobjectmap" id="GIM-%Xr`cyAeTb*t+=zx">
+            <statement name="ppredicateobjectmap">
+              <block type="predicatemap" id="+T.xQQU9_)/|t!VOrG3k">
+                <field name="TERMMAP">CONSTANT</field>
+                <field name="TERMMAPVALUE">foaf:name</field>
+              </block>
+            </statement>
+            <statement name="opredicateobjectmap">
+              <block type="objectmap" id="|ew*8U+AQ1nroq-w?;Tg">
+                <field name="TERMMAP">COLUMN</field>
+                <field name="TERMMAPVALUE">first_name</field>
+              </block>
+            </statement>
+          </block>
+        </statement>
+        <next>
+          <block type="triplemap" id="Lb#*,p}8tKr%hO{DHf()">
+            <field name="TRIPLEMAPNAME">TripleMap2</field>
+            <statement name="logicaltable">
+              <block type="tablesqlquery" id="[],1T~Q-(f|*cOGmTZht">
+                <mutation sql="SELECT *.* FROM BIGTABLE"/>
+                <field name="TABLESQLQUERY">sqlquery</field>
+              </block>
+            </statement>
+            <statement name="subjectmap">
+              <block type="subjectmap" id="P)(?;TI)Uf%O3G4},35J">
+                <field name="TERMMAP">COLUMN</field>
+                <field name="TERMMAPVALUE">http://anotherexample.org/{id}</field>
+                <statement name="termmap">
+                  <block type="class" id="3+VmuouHK5w0dYBgAN!Z">
+                    <field name="CLASS">peter:testname</field>
+                    <next>
+                      <block type="class" id="P37tz2?~4DLF|vSw94XW">
+                        <field name="CLASS">foaf:another</field>
+                      </block>
+                    </next>
+                  </block>
+                </statement>
+              </block>
+            </statement>
+            <statement name="predicateobjectmap">
+              <block type="predicateobjectmap" id="dky!:=S^.-Hr.;fC.`F,">
+                <statement name="ppredicateobjectmap">
+                  <block type="predicatemap" id="+^i%sA6ad1?h-J((fD0I">
+                    <field name="TERMMAP">TEMPLATE</field>
+                    <field name="TERMMAPVALUE">foaf:name</field>
+                  </block>
+                </statement>
+                <statement name="opredicateobjectmap">
+                  <block type="objectmap" id="ph0|5vd`gcK~[M*|8n5~">
+                    <field name="TERMMAP">TEMPLATE</field>
+                    <field name="TERMMAPVALUE">data_blah</field>
+                  </block>
+                </statement>
+              </block>
+            </statement>
+            <next>
+              <block type="triplemap" id="Ze^u1eV*?juqiS@:hs67">
+                <field name="TRIPLEMAPNAME">TripleMap3</field>
+                <statement name="logicaltable">
+                  <block type="tablesqlquery" id="RQoOFm%{;SG;UuB|ET:~">
+                    <mutation sql="SELECT *.* FROM BIGTABLE"/>
+                    <field name="TABLESQLQUERY">sqlquery</field>
+                  </block>
+                </statement>
+                <statement name="subjectmap">
+                  <block type="subjectmap" id="l[#;!qniv(.gH6mpyT}r">
+                    <field name="TERMMAP">COLUMN</field>
+                    <field name="TERMMAPVALUE">http://yetanotherexample.org/{id}</field>
+                  </block>
+                </statement>
+                <statement name="predicateobjectmap">
+                  <block type="predicateobjectmap" id="r.Sxp]LI4d`V@MDAainC">
+                    <statement name="ppredicateobjectmap">
+                      <block type="predicatemap" id="0`wHMy2thb02pARkZG^N">
+                        <field name="TERMMAP">TEMPLATE</field>
+                        <field name="TERMMAPVALUE">foaf:name</field>
+                      </block>
+                    </statement>
+                    <statement name="opredicateobjectmap">
+                      <block type="objectmap" id="zQhaC*:!Czcl2|-QddL!">
+                        <field name="TERMMAP">TEMPLATE</field>
+                        <field name="TERMMAPVALUE">data_blah</field>
+                      </block>
+                    </statement>
+                  </block>
+                </statement>
+                <next>
+                  <block type="triplemap" id="|qC3RHs(,0Hu):64;FCV">
+                    <field name="TRIPLEMAPNAME">TripleMap4</field>
+                    <statement name="logicaltable">
+                      <block type="tablesqlquery" id="?8~8x@I@_Gih~gPJs4Y:">
+                        <mutation sql="SELECT *.* FROM BIGTABLE"/>
+                        <field name="TABLESQLQUERY">sqlquery</field>
+                      </block>
+                    </statement>
+                    <statement name="subjectmap">
+                      <block type="subjectmap" id="~hPo.T=UIA69D5zyRC|h">
+                        <field name="TERMMAP">COLUMN</field>
+                        <field name="TERMMAPVALUE">http://fourthexample.org/{id}</field>
+                        <statement name="termmap">
+                          <block type="subjecttermtype" id="p_3-,M4Yp[^OP^jEWXed">
+                            <field name="TERMTYPE">termtypeblanknode</field>
+                          </block>
+                        </statement>
+                      </block>
+                    </statement>
+                    <statement name="predicateobjectmap">
+                      <block type="predicateobjectmap" id="vz*~a)EW@3G]~C}i65XV">
+                        <statement name="ppredicateobjectmap">
+                          <block type="predicatemap" id="n42mMkjL6?Yh1G+Jk]x%">
+                            <field name="TERMMAP">TEMPLATE</field>
+                            <field name="TERMMAPVALUE">foaf:name</field>
+                          </block>
+                        </statement>
+                        <statement name="opredicateobjectmap">
+                          <block type="objectmap" id=":aja.@z[L]}9i8!oT.I1">
+                            <field name="TERMMAP">TEMPLATE</field>
+                            <field name="TERMMAPVALUE">data_blah</field>
+                          </block>
+                        </statement>
+                      </block>
+                    </statement>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </next>
+      </block>
+    </statement>
+  </block>
+</xml>

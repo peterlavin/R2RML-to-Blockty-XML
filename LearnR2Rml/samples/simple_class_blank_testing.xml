@@ -1,0 +1,69 @@
+<xml xmlns="http://www.w3.org/1999/xhtml">
+  <block type="mapping" id="P-;|9)-p3xoJ@.t+K{Q?" deletable="false" x="9" y="3">
+    <statement name="mapping">
+      <block type="prefix" id="G@A7h5^=46#ze`4ay++R">
+        <field name="PREFIX">foaf</field>
+        <field name="URI">http://xmlns.com/foaf/0.1/</field>
+        <next>
+          <block type="prefix" id=".=CAWmZ~+;MwI4=)M.%L">
+            <field name="PREFIX">peter</field>
+            <field name="URI">http://peter.com/peter/0.1/</field>
+          </block>
+        </next>
+      </block>
+    </statement>
+    <statement name="triplesmap">
+      <block type="triplemap" id="XHjSP6U+5Qmx`sNj}yZW">
+        <field name="TRIPLEMAPNAME">TripleMap1</field>
+        <statement name="logicaltable">
+          <block type="tablesqlquery" id="pQPs.bJ=Bs;zodedxdEe">
+            <mutation sql="employees"/>
+            <field name="TABLESQLQUERY">table</field>
+          </block>
+        </statement>
+
+
+        <statement name="subjectmap">
+          <block type="subjectmap" id="0K:N,b9}FKH%yv`244{p">
+            <field name="TERMMAP">TEMPLATE</field>
+            <field name="TERMMAPVALUE">http://data.example.org/employee/{id}</field>
+
+
+            <statement name="termmap">
+              <block type="class" id="BD}V0e74m-gNrm!s%1M9">
+
+                <field name="CLASS">foaf:Person</field>
+
+                <block type="subjecttermtype" id="n@qYD0bS%aC(N5gO/WjD">
+                    <field name="TERMTYPE">termtypeiri</field>
+                </block>
+
+              </block>
+            </statement>
+
+
+          </block>
+        </statement>
+        
+
+
+<statement name="predicateobjectmap">
+          <block type="predicateobjectmap" id="GIM-%Xr`cyAeTb*t+=zx">
+            <statement name="ppredicateobjectmap">
+              <block type="predicatemap" id="+T.xQQU9_)/|t!VOrG3k">
+                <field name="TERMMAP">CONSTANT</field>
+                <field name="TERMMAPVALUE">foaf:name</field>
+              </block>
+            </statement>
+            <statement name="opredicateobjectmap">
+              <block type="objectmap" id="|ew*8U+AQ1nroq-w?;Tg">
+                <field name="TERMMAP">COLUMN</field>
+                <field name="TERMMAPVALUE">first_name</field>
+              </block>
+            </statement>
+          </block>
+        </statement>
+      </block>
+    </statement>
+  </block>
+</xml>

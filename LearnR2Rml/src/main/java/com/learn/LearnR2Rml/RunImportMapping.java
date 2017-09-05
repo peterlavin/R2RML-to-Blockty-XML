@@ -1,9 +1,11 @@
 package com.learn.LearnR2Rml;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.xml.transform.TransformerException;
 
@@ -55,8 +57,9 @@ public class RunImportMapping {
 		mappingFile = "/home/lavinpe/workspace/r2rml-editor/samples/2_tm_with_class_iri.ttl";
 		mappingFile = "/home/lavinpe/workspace/r2rml-editor/samples/3_tms_class_iri_none.ttl";
 		mappingFile = "/home/lavinpe/workspace/r2rml-editor/samples/4_tms_class_iri_blank_none.ttl";
-		
 		mappingFile = "/home/lavinpe/workspace/r2rml-editor/samples/various_testing.ttl";
+		
+		mappingFile = "/home/lavinpe/Downloads/r2rml-use-cases/mapping6.ttl";
 															
 		
 		
@@ -105,10 +108,32 @@ public class RunImportMapping {
 		int triplesMapCount = 0;
 		int totalTriplesMapCount = resMap.size();
 		
+		///////////////////////////////////////////// Sorting map tests,
+		// Maps are often ordered. XML recreates reversed visuals in 
+		// blockty - need to use <next blocks>
+//		List<Resource> keys = new ArrayList<Resource>(resMap.keySet());
+//		
+//		System.out.println("Printing list.. " + keys.size() + "\n");
+//		
+//		for(Resource key: keys){
+//			
+//			System.out.println(key.getLocalName());
+//			
+//		}
+//		
+//		
+//		System.out.println("Printing map.. " + keys.size() + "\n");
+//		
+//		for (Resource res : resMap.keySet()) {
+//			System.out.println(res.getLocalName());
+//		}
+//		
+//		System.exit(0);	
+		//////////////////////////////////////////////
+		
 		ProcessTriplesMaps ptm = new ProcessTriplesMaps(xml);
 
 		xml = ptm.processTriplesMaps(resMap);
-		
 		
 		
 		

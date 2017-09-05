@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<xml xmlns="http://www.w3.org/1999/xhtml">
+  <block deletable="false" id="T#FwtMVYf+)t7bxA[yk[" type="mapping" x="-180" y="-465">
+    <statement name="mapping">
+      <block id="z_XJWkVn?UkjFH.rH6Z)" type="predefinedprefix">
+        <field name="PREFIX">foaf: &lt;http://xmlns.com/foaf/0.1/&gt;</field>
+        <next>
+          <block id="@bTPLoFBGs@Cu{kxeiAW" type="predefinedprefix">
+            <field name="PREFIX">rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt;</field>
+          </block>
+        </next>
+      </block>
+    </statement>
+    <statement name="triplesmap">
+      <block id="i:x7-{tCk{cRb?R76+6^" type="triplemap">
+        <field name="TRIPLEMAPNAME">TripleMap1</field>
+        <statement name="logicaltable">
+          <block id="coVHT@xF~,Rt@YD*%Tns" type="tablesqlquery">
+            <mutation sql="employees"/>
+            <field name="TABLESQLQUERY">table</field>
+          </block>
+        </statement>
+        <statement name="subjectmap">
+          <block id="d^[?0MZFa2.7+{HWL[I%" type="subjectmap">
+            <field name="TERMMAP">TEMPLATE</field>
+            <field name="TERMMAPVALUE">http://data.example.org/employee/{id}</field>
+            <statement name="termmap">
+              <block id="zutH`X):}~H2(bOxDdIj" type="class">
+                <field name="CLASS">foaf:Person</field>
+              </block>
+            </statement>
+          </block>
+        </statement>
+        <statement name="predicateobjectmap">
+          <block id="g704cP?U~5qIST[76S;E" type="predicateobjectmap">
+            <statement name="ppredicateobjectmap">
+              <block id="?Nb*^c3kQm0nP4g}RjW%" type="predicatemap">
+                <field name="TERMMAP">CONSTANT</field>
+                <field name="TERMMAPVALUE">foaf:givenName</field>
+              </block>
+            </statement>
+            <statement name="opredicateobjectmap">
+              <block id="|h:P*m*ed8z(g9x(!zZA" type="objectmap">
+                <field name="TERMMAP">COLUMN</field>
+                <field name="TERMMAPVALUE">first_name</field>
+              </block>
+            </statement>
+            <next>
+              <block id="8h_agvD~_?BBS]`^kWfm" type="predicateobjectmap">
+                <statement name="ppredicateobjectmap">
+                  <block id="%[XA_CqW),|~j!~~abr(" type="predicatemap">
+                    <field name="TERMMAP">CONSTANT</field>
+                    <field name="TERMMAPVALUE">foaf:familyName </field>
+                  </block>
+                </statement>
+                <statement name="opredicateobjectmap">
+                  <block id="EImi@40ETVd*6FkN.9}(" type="objectmap">
+                    <field name="TERMMAP">COLUMN</field>
+                    <field name="TERMMAPVALUE">last_name</field>
+                  </block>
+                </statement>
+                <next>
+                  <block id="wJN_Ho%G5Y0M;V@~TbD-" type="predicateobjectmap">
+                    <statement name="ppredicateobjectmap">
+                      <block id="+|NBcH2J|^{XeEwl_ekU" type="predicatemap">
+                        <field name="TERMMAP">CONSTANT</field>
+                        <field name="TERMMAPVALUE">foaf:name </field>
+                      </block>
+                    </statement>
+                    <statement name="opredicateobjectmap">
+                      <block id="`,uk)I,V8GM]?y]T;k!r" type="objectmap">
+                        <field name="TERMMAP">TEMPLATE</field>
+                        <field name="TERMMAPVALUE">{last_name}, {first_name}</field>
+                        <statement name="termmap">
+                          <block id="C%64)-z]+QF3R2M#Mp#Y" type="objecttermtype">
+                            <field name="TERMTYPE">termtypeliteral</field>
+                          </block>
+                        </statement>
+                      </block>
+                    </statement>
+                    <next>
+                      <block id="s8v2|Xt}h?Wx-Lf()?=E" type="predicateobjectmap">
+                        <statement name="ppredicateobjectmap">
+                          <block id="w]/H:m-N#.bHFt1N8mEj" type="predicatemap">
+                            <field name="TERMMAP">CONSTANT</field>
+                            <field name="TERMMAPVALUE">foaf:based_near</field>
+                          </block>
+                        </statement>
+                        <statement name="opredicateobjectmap">
+                          <block id="OWlG[f}zD/56/t1-XI5o" type="parenttriplesmap">
+                            <field name="PARENTTRIPLEMAP">TripleMap2</field>
+                            <statement name="joincondition">
+                              <block id="rsHPZ;{[K`a.cX-//A1c" type="joincondition">
+                                <field name="CHILD">city</field>
+                                <field name="PARENT">city</field>
+                              </block>
+                            </statement>
+                          </block>
+                        </statement>
+                      </block>
+                    </next>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </statement>
+        <next>
+          <block id=")03c=45m]pg(wtNWqFic" type="triplemap">
+            <field name="TRIPLEMAPNAME">TripleMap2</field>
+            <statement name="logicaltable">
+              <block id="pO_D4ibTBHrG90^TcBdk" type="tablesqlquery">
+                <mutation sql="SELECT DISTINCT city from employees "/>
+                <field name="TABLESQLQUERY">sqlquery</field>
+              </block>
+            </statement>
+            <statement name="subjectmap">
+              <block id="9~i@]E-,p*+Jw)MTkfMM" type="subjectmap">
+                <field name="TERMMAP">TEMPLATE</field>
+                <field name="TERMMAPVALUE">http://data.example.org/city/{city}</field>
+                <statement name="termmap">
+                  <block id="DUzZng4J~ePM3SD:m9!t" type="class">
+                    <field name="CLASS">foaf:Spatial_Thing</field>
+                  </block>
+                </statement>
+              </block>
+            </statement>
+            <statement name="predicateobjectmap">
+              <block id="y/A]-mdCtw):lc]BD}.)" type="predicateobjectmap">
+                <statement name="ppredicateobjectmap">
+                  <block id="+^poMSgc0X371cU*@iFP" type="predicatemap">
+                    <field name="TERMMAP">CONSTANT</field>
+                    <field name="TERMMAPVALUE">rdfs:label</field>
+                  </block>
+                </statement>
+                <statement name="opredicateobjectmap">
+                  <block id="vxzyJnS;nbeY|mu!cO1`" type="objectmap">
+                    <field name="TERMMAP">COLUMN</field>
+                    <field name="TERMMAPVALUE">city</field>
+                  </block>
+                </statement>
+              </block>
+            </statement>
+          </block>
+        </next>
+      </block>
+    </statement>
+  </block>
+</xml>

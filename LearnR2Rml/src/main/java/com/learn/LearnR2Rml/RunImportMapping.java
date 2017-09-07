@@ -59,7 +59,7 @@ public class RunImportMapping {
 		mappingFile = "/home/lavinpe/workspace/r2rml-editor/samples/4_tms_class_iri_blank_none.ttl";
 		mappingFile = "/home/lavinpe/workspace/r2rml-editor/samples/various_testing.ttl";
 		
-		mappingFile = "/home/lavinpe/Downloads/r2rml-use-cases/mapping6.ttl";
+		//mappingFile = "/home/lavinpe/Downloads/r2rml-use-cases/mapping6a.ttl";
 															
 		
 		
@@ -145,7 +145,7 @@ public class RunImportMapping {
  */
 	
 		System.out.println("\nFINAL DOCUMENT...\n");
-		PrettyPrintXML.printDocument(xml);
+		///////////////PrettyPrintXML.printDocument(xml);
 
 	
 	

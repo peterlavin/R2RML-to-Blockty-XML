@@ -107,17 +107,18 @@ public class ProcessSubjectMap {
 		ProcessSmTermMap ptm = new ProcessSmTermMap(xml);
 		ptm.processTermMap(subjMapStatementElm, subjmap);
 
-		System.out.println("FINAL TRIPLESMAP STATEMENT...");
-		PrettyPrintXML.printElement(tripmapStatementElem);
 		
-		/*
-		 * ProcessSmGraphMap is called, the required actions (if any)
-		 * are determined in the ProcessSmGraphMap class. 
-		 */
-		
-		ProcessSmGraphMap pgm = new ProcessSmGraphMap(xml);
-		
-		pgm.processSmGraphMap(subjMapStatementElm, subjmap);
+//		/*
+//		 * ProcessSmGraphMap is called, the required actions (if any)
+//		 * are determined in the ProcessSmGraphMap class. 
+//		 */
+//		
+//		ProcessSmGraphMap pgm = new ProcessSmGraphMap(xml);
+//		
+//		pgm.processSmGraphMap(subjMapStatementElm, subjmap);
+
+//		System.out.println("FINAL TRIPLESMAP STATEMENT after TM and GM...");
+//		PrettyPrintXML.printElement(tripmapStatementElem);
 
 	}
 

@@ -24,7 +24,15 @@ public class ProcessPredicateObjectMaps {
 		
 		
 		
-		List<PredicateObjectMap> pom = tmap.getPredicateObjectMaps();
+		List<PredicateObjectMap> pomList = tmap.getPredicateObjectMaps();
+		
+		for(PredicateObjectMap pom : pomList){
+			
+			
+			
+		}
+		
+		
 		
 		
 		

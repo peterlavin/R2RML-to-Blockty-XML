@@ -45,6 +45,11 @@ public final class CONST {
 	public static final String NEXT = "next";
 	
 	/*
+	 * Related to Graph Maps
+	 */
+	public static final String SUBJECTGRAPHTERMAP = "subjectgraphtermap";
+	
+	/*
 	 * Related to Logical Tables
 	 */
 	public static final String TABLE = "table";

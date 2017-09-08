@@ -7,7 +7,6 @@ import java.util.Map.Entry;
 import org.apache.jena.rdf.model.Resource;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 import r2rml.constants.CONST;
 import r2rml.model.GraphMap;
@@ -56,7 +55,6 @@ public class ProcessSmTermMap {
 		 * 
 		 */
 
-
 		// XML element to be added to Subject block later
 		Element cgtBlock = null;
 
@@ -99,12 +97,10 @@ public class ProcessSmTermMap {
 		System.out.println("Binary representation for Class-Graph-TT is (C.G.T)... " + comboValue + " or "
 				+ comboValueBinStr + "\n");
 
-		;
-		;
-		;
-		;
-		;
-		;
+		/*
+		 * Now that the presence or absence of sub-parts of a Subject Map are
+		 * know, proceed to chose the correct combination
+		 */
 
 		if (comboValue == 0) { // 000 Do nothing
 
@@ -116,9 +112,6 @@ public class ProcessSmTermMap {
 
 			cgtBlock = createTermTypeOnlyBlock(subjmap);
 
-			System.out.println("cgtBlock for 001...\n");
-			PrettyPrintXML.printElement(cgtBlock);
-
 		} else if (comboValue == 2) { // C.G.T 010
 
 			/*
@@ -126,15 +119,9 @@ public class ProcessSmTermMap {
 			 */
 			cgtBlock = createGraphOnlyBlock(subjmap);
 
-			System.out.println("cgtBlock for 010...\n");
-			PrettyPrintXML.printElement(cgtBlock);
-
 		} else if (comboValue == 3) { // C.G.T 011
 
 			cgtBlock = createTTAndGraphBlock(subjmap);
-
-			System.out.println("cgtBlock for 011...\n");
-			PrettyPrintXML.printElement(cgtBlock);
 
 		} else if (comboValue == 4) { // C.G.T 100
 
@@ -144,15 +131,10 @@ public class ProcessSmTermMap {
 
 			cgtBlock = createClassOnlyBlock(subjmap);
 
-			System.out.println("cgtBlock for 100...\n");
-			PrettyPrintXML.printElement(cgtBlock);
-
 		} else if (comboValue == 5) { // C.G.T 101
 
 			cgtBlock = createTTAndClassBlock(subjmap);
-
-			System.out.println("cgtBlock for 101...\n");
-			PrettyPrintXML.printElement(cgtBlock);
+			;
 
 		} else if (comboValue == 6) { // C.G.T 110
 
@@ -161,168 +143,53 @@ public class ProcessSmTermMap {
 			 */
 			cgtBlock = createGraphAndClassBlock(subjmap);
 
-			System.out.println("cgtBlock for 110...\n");
-			PrettyPrintXML.printElement(cgtBlock);
-
 		} else if (comboValue == 7) { // C.G.T 111
-			
+
 			cgtBlock = createTTGraphClassBlock(subjmap);
-			System.out.println("cgtBlock for 111...\n");
-			PrettyPrintXML.printElement(cgtBlock);
 
 		}
+
+		System.out.println("cgtBlock for... " + comboValueBinStr + "\n");
+		PrettyPrintXML.printElement(cgtBlock);
 
 		System.out.println();
-
-	}
-
-	
-	/*
-	 * Takes any block element and puts it in a <next></next> element
-	 */
-	private Element putBlockInNext(Element blockElm) {
-
-		Element nextElement = xml.createElement(CONST.NEXT);
-
-		nextElement.appendChild(blockElm);
-
-		return nextElement;
-
-	}
-
-	/*
-	 * Helper method to get the prefix and its local name of a TermType class.
-	 * These make up the name of the subject map class.
-	 */
-	private String getResourcePrefix(Resource resource) {
-
-		String prefixAndName = "";
-
-		Map<String, String> pmap = (Map<String, String>) resource.getModel().getNsPrefixMap();
-
-		for (Entry<String, String> value : pmap.entrySet()) {
-
-			// System.out.println(value.getValue() + "\n" +
-			// resource.getNameSpace() + "\n");
-
-			if (value.getValue().equals(resource.getNameSpace())) {
-
-				prefixAndName = value.getKey() + ":" + resource.getLocalName();
-				return prefixAndName; 
-				
-			} else {
-				prefixAndName = "<" + resource.toString() + ">";
-			}
-		}
-
-		return prefixAndName;
-
-	}
-
-	/*
-	 * Creates a single class block
-	 */
-	private Element createClassBlock(Resource subjmapClass) {
-
-		String classPrefixName = getResourcePrefix(subjmapClass);
-
-		Element classField = xml.createElement(CONST.FIELD);
-		classField.setAttribute(CONST.NAME, CONST.CLASS_UC);
-		classField.appendChild(xml.createTextNode(classPrefixName));
-
-		// Create block of type 'class' and add a field of name 'class' to it
-		Element termMapBlock = xml.createElement(CONST.BLOCK);
-		termMapBlock.setAttribute(CONST.TYPE, CONST.CLASS);
-
-		termMapBlock.appendChild(classField);
-
-		return termMapBlock;
-	}
-
-	/*
-	 * Create a block for a single graph map
-	 */
-
-	private Element createGraphBlock(GraphMap graphMap) {
-
+		
 		/*
-		 * Determine if the graph map is a constant, column or template
+		 * Only add this block if it has changed
+		 * from being null (as initialised)
 		 */
-
-		String termMapTypeStr = "";
-		String prefixAndName = "";
-
-		/*
-		 * Prepare these variables for graph block creation,
-		 * this depends on if it is a constant, column or template
-		 */
-		if (graphMap.isConstantValuedTermMap()) {
-
-			termMapTypeStr = CONST.CONSTANT_UC;
+		if(cgtBlock != null){
+			
+			
+			
+			// The first child of a statement is always a <block>
+			Element subjectMapBlock = (Element) subjectMapStatement.getFirstChild();
+			
 			/*
-			 * Prefix:name set need for constant only
+			 * Create a termmap statement
 			 */
-			prefixAndName = getResourcePrefix(graphMap.getConstant().asResource());
-
-		} else if (graphMap.isColumnValuedTermMap()) {
-			termMapTypeStr = CONST.COLUMN_UC;
-			prefixAndName = graphMap.getColumn().toString();
-		} else {
-			termMapTypeStr = CONST.TEMPLATE_UC;
-			prefixAndName = graphMap.getTemplate().toString();
+			Element termMapStatement = xml.createElement(CONST.STATEMENT);
+			termMapStatement.setAttribute(CONST.NAME, CONST.TERMMAP);
+			
+			termMapStatement.appendChild(cgtBlock);
+			/*
+			 * Append all this to the subjectMapBlock
+			 */
+			subjectMapBlock.appendChild(termMapStatement);
+			
+			
+			
+			
+			
 		}
 
-		/*
-		 * Create the inner field elements first
-		 */
-		Element fieldTermMap = xml.createElement(CONST.FIELD);
-		fieldTermMap.setAttribute(CONST.NAME, CONST.TERMMAP_UC);
-		fieldTermMap.appendChild(xml.createTextNode(termMapTypeStr));
-
-		Element fieldTermMapValue = xml.createElement(CONST.TERMMAPVALUE_UC);
-		fieldTermMapValue.setAttribute(CONST.NAME, CONST.TERMMAPVALUE_UC);
-		fieldTermMapValue.appendChild(xml.createTextNode(prefixAndName));
-
-		/*
-		 * Then append these both to a <block type="subjectgraphtermap">
-		 */
-		Element subjGraphBlock = xml.createElement(CONST.BLOCK);
-		subjGraphBlock.setAttribute(CONST.TYPE, CONST.SUBJECTGRAPHTERMAP);
-		subjGraphBlock.appendChild(fieldTermMap);
-		subjGraphBlock.appendChild(fieldTermMapValue);
-
-		return subjGraphBlock;
-
-	}
-
-
-
-	private Element createSubjGraphBlock(String termMapTypeStr, String prefixAndName) {
-
-		/*
-		 * Create the inner field elements
-		 */
-		Element fieldTermMap = xml.createElement(CONST.FIELD);
-		fieldTermMap.setAttribute(CONST.NAME, CONST.TERMMAP_UC);
-		fieldTermMap.appendChild(xml.createTextNode(CONST.COLUMN_UC));
-
-		Element fieldTermMapValue = xml.createElement(CONST.TERMMAPVALUE_UC);
-		fieldTermMapValue.setAttribute(CONST.NAME, CONST.TERMMAPVALUE_UC);
-		fieldTermMapValue.appendChild(xml.createTextNode(prefixAndName));
-
-		/*
-		 * Append these both to a <block type="subjectgraphtermap">
-		 */
-		Element subjGraphBlock = xml.createElement(CONST.BLOCK);
-		subjGraphBlock.setAttribute(CONST.TYPE, CONST.SUBJECTGRAPHTERMAP);
-		subjGraphBlock.appendChild(fieldTermMap);
-		subjGraphBlock.appendChild(fieldTermMapValue);
-
-		return subjGraphBlock;
 	}
 
 	/*
-	 * Creates a block element which contains
+	 * METHODS TO CREATE THE BLOCKS WHICH ARE RETURNED. SOME OF THESE ARE USED
+	 * AND REUSED BY OTHERS
+	 * 
+	 * Creates a block element which contains only a term type
 	 */
 
 	private Element createTermTypeOnlyBlock(SubjectMap subjmap) {
@@ -509,9 +376,7 @@ public class ProcessSmTermMap {
 
 	}
 
-	private Element createGraphAndClassBlock(SubjectMap subjmap) { // final
-																	// solution
-
+	private Element createGraphAndClassBlock(SubjectMap subjmap) {
 		/*
 		 * The graph block is nested within the class block, with the first
 		 * class processed
@@ -584,8 +449,7 @@ public class ProcessSmTermMap {
 		return graphAndClassBlock;
 	}
 
-	private Element createTTAndClassBlock(SubjectMap subjmap) { // final
-																// solution
+	private Element createTTAndClassBlock(SubjectMap subjmap) {
 
 		/*
 		 * The graph block is nested within the class block, with the first
@@ -662,8 +526,7 @@ public class ProcessSmTermMap {
 	/*
 	 * Graph and TT block
 	 */
-	private Element createTTAndGraphBlock(SubjectMap subjmap) { // final
-																// solution
+	private Element createTTAndGraphBlock(SubjectMap subjmap) {
 
 		/*
 		 * The graph block is nested within the class block, with the first
@@ -736,16 +599,15 @@ public class ProcessSmTermMap {
 
 		return ttAndGraphBlock;
 	}
-	
-	
+
 	/*
-	 * Create a block for a Termtype, graph(s) and class(es) 
+	 * Create a block for a Termtype, graph(s) and class(es)
 	 */
-	private Element createTTGraphClassBlock(SubjectMap subjmap){
-		
+	private Element createTTGraphClassBlock(SubjectMap subjmap) {
+
 		/*
-		 * By convention, Termtype blocks are put in graphs,
-		 * then both put in a class
+		 * By convention, Termtype blocks are put in graphs, then both put in a
+		 * class
 		 */
 		Element ttAndGraphBlock = createTTAndGraphBlock(subjmap);
 
@@ -813,7 +675,151 @@ public class ProcessSmTermMap {
 		}
 
 		return ttGraphClassBlock;
-		
-		
+
 	}
+
+	/*
+	 * HELPER METHODS ARE BELOW HERE...
+	 * 
+	 * Takes any block element and puts it in a <next></next> element
+	 */
+	private Element putBlockInNext(Element blockElm) {
+
+		Element nextElement = xml.createElement(CONST.NEXT);
+
+		nextElement.appendChild(blockElm);
+
+		return nextElement;
+
+	}
+
+	/*
+	 * Helper method to get the prefix and its local name of a TermType class.
+	 * These make up the name of the subject map class.
+	 */
+	private String getResourcePrefix(Resource resource) {
+
+		String prefixAndName = "";
+
+		Map<String, String> pmap = (Map<String, String>) resource.getModel().getNsPrefixMap();
+
+		for (Entry<String, String> value : pmap.entrySet()) {
+
+			// System.out.println(value.getValue() + "\n" +
+			// resource.getNameSpace() + "\n");
+
+			if (value.getValue().equals(resource.getNameSpace())) {
+
+				prefixAndName = value.getKey() + ":" + resource.getLocalName();
+				return prefixAndName;
+
+			} else {
+				prefixAndName = "<" + resource.toString() + ">";
+			}
+		}
+
+		return prefixAndName;
+
+	}
+
+	/*
+	 * Creates a single class block
+	 */
+	private Element createClassBlock(Resource subjmapClass) {
+
+		String classPrefixName = getResourcePrefix(subjmapClass);
+
+		Element classField = xml.createElement(CONST.FIELD);
+		classField.setAttribute(CONST.NAME, CONST.CLASS_UC);
+		classField.appendChild(xml.createTextNode(classPrefixName));
+
+		// Create block of type 'class' and add a field of name 'class' to it
+		Element termMapBlock = xml.createElement(CONST.BLOCK);
+		termMapBlock.setAttribute(CONST.TYPE, CONST.CLASS);
+
+		termMapBlock.appendChild(classField);
+
+		return termMapBlock;
+	}
+
+	/*
+	 * Create a block for a single graph map
+	 */
+
+	private Element createGraphBlock(GraphMap graphMap) {
+
+		/*
+		 * Determine if the graph map is a constant, column or template
+		 */
+
+		String termMapTypeStr = "";
+		String prefixAndName = "";
+
+		/*
+		 * Prepare these variables for graph block creation, this depends on if
+		 * it is a constant, column or template
+		 */
+		if (graphMap.isConstantValuedTermMap()) {
+
+			termMapTypeStr = CONST.CONSTANT_UC;
+			/*
+			 * Prefix:name set need for constant only
+			 */
+			prefixAndName = getResourcePrefix(graphMap.getConstant().asResource());
+
+		} else if (graphMap.isColumnValuedTermMap()) {
+			termMapTypeStr = CONST.COLUMN_UC;
+			prefixAndName = graphMap.getColumn().toString();
+		} else {
+			termMapTypeStr = CONST.TEMPLATE_UC;
+			prefixAndName = graphMap.getTemplate().toString();
+		}
+
+		/*
+		 * Create the inner field elements first
+		 */
+		Element fieldTermMap = xml.createElement(CONST.FIELD);
+		fieldTermMap.setAttribute(CONST.NAME, CONST.TERMMAP_UC);
+		fieldTermMap.appendChild(xml.createTextNode(termMapTypeStr));
+
+		Element fieldTermMapValue = xml.createElement(CONST.FIELD);
+		fieldTermMapValue.setAttribute(CONST.NAME, CONST.TERMMAPVALUE_UC);
+		fieldTermMapValue.appendChild(xml.createTextNode(prefixAndName));
+
+		/*
+		 * Then append these both to a <block type="subjectgraphtermap">
+		 */
+		Element subjGraphBlock = xml.createElement(CONST.BLOCK);
+		subjGraphBlock.setAttribute(CONST.TYPE, CONST.SUBJECTGRAPHTERMAP);
+		subjGraphBlock.appendChild(fieldTermMap);
+		subjGraphBlock.appendChild(fieldTermMapValue);
+
+		return subjGraphBlock;
+
+	}
+
+	private Element createSubjGraphBlock(String termMapTypeStr, String prefixAndName) {
+
+		/*
+		 * Create the inner field elements
+		 */
+		Element fieldTermMap = xml.createElement(CONST.FIELD);
+		fieldTermMap.setAttribute(CONST.NAME, CONST.TERMMAP_UC);
+		fieldTermMap.appendChild(xml.createTextNode(CONST.COLUMN_UC));
+
+		Element fieldTermMapValue = xml.createElement(CONST.FIELD);
+		fieldTermMapValue.setAttribute(CONST.NAME, CONST.TERMMAPVALUE_UC);
+		fieldTermMapValue.appendChild(xml.createTextNode(prefixAndName));
+
+		/*
+		 * Append these both to a <block type="subjectgraphtermap">
+		 */
+		Element subjGraphBlock = xml.createElement(CONST.BLOCK);
+		subjGraphBlock.setAttribute(CONST.TYPE, CONST.SUBJECTGRAPHTERMAP);
+		subjGraphBlock.appendChild(fieldTermMap);
+		subjGraphBlock.appendChild(fieldTermMapValue);
+
+		return subjGraphBlock;
+	}
+
 }

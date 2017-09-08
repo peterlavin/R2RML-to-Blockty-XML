@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 import org.apache.jena.rdf.model.Resource;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 import r2rml.constants.CONST;
 import r2rml.model.GraphMap;
@@ -15,9 +16,8 @@ import r2rml.model.SubjectMap;
 import xmlutilities.PrettyPrintXML;
 
 /**
- * Processes TermMaps associated with SubjectMaps and
- * creates an XML element which is used (in part) to recreate a mapping
- * visual in the r2rml-editor UI.
+ * Processes TermMaps associated with SubjectMaps and creates an XML element
+ * which is used (in part) to recreate a mapping visual in the r2rml-editor UI.
  * 
  * @author lavinpe
  *
@@ -35,248 +35,150 @@ public class ProcessSmTermMap {
 
 	/**
 	 * Receives a previously created XML element and a SubjectMap object.
-	 * Extracts the details of the SubjectMap object and addes them to the
-	 * XML element. The element is part of the XML Document which is a type
-	 * of this class.
+	 * Extracts the details of the SubjectMap object and addes them to the XML
+	 * element. The element is part of the XML Document which is a type of this
+	 * class.
 	 * 
 	 * @param subjectMapStatement
 	 * @param subjmap
 	 */
 	public void processTermMap(Element subjectMapStatement, SubjectMap subjmap) {
-		
-		
+
 		/*
-		 * Three entities relating to SubjectMaps are converted to XML in this class.
-		 * If there is a declared TermType other than IRI, that is processed first,
-		 * and nested within <next> blocks below all other entities.
+		 * Three entities relating to SubjectMaps are converted to XML in this
+		 * class. If there is a declared TermType other than IRI, that is
+		 * processed first, and nested within <next> blocks below all other
+		 * entities.
 		 * 
-		 *  Subject Graph Maps are nest, followed by classes.
-		 *  
-		 *  All of these are nested in the SubjectMap statement/block element.
+		 * Subject Graph Maps are next, followed by classes.
+		 * 
+		 * All of these are nested in the SubjectMap statement/block element.
+		 * 
 		 */
-		
-		Element termTypeBlock= null;
-		Element graphsBlock= null;
-		Element classBlock= null;
-		
-		
+
+
+		// XML element to be added to Subject block later
+		Element cgtBlock = null;
+
+		// Cannot use binary strings as Apache Jena is limited to Java 1.5
+		// int a = 0b000;
+		// int b = 0b010;
+
 		/*
-		 * First, determine if an Element for TermType is needed, i.e.
-		 * if the TermType is other than IRI. There can only be one
-		 * Term Type
+		 * There are 8 different perumtations of combinations of Classes, Graphs
+		 * and Term Types. Each different one requires a different sequence of
+		 * adding the various XML elements to the element added to the subject
+		 * map.
+		 * 
+		 * The presence of each one is represented in a number. For clarity, the
+		 * binary format of that number is used.
 		 */
-		
-		if(!subjmap.isTermTypeIRI()){
-			
-			termTypeBlock= createTermTypeBlock(subjmap);
-			
-			System.out.println("1. Returned subjGraphBlock for output...\n");
-			PrettyPrintXML.printElement(termTypeBlock);
-			
-		}
-		
-		
+
+		int ttValue = 1; // 001
+		int graphValue = 2; // 010
+		int classValue = 4; // 100
+
 		/*
-		 * Second, determine if there are one or more GraphsMaps, if so, prepare
-		 * the block-next structure for insertion. If termTypeBlock is null, 
-		 * ignore it, otherwise, nest it with the first Graph Map
+		 * First, determine if an Element for TermType is needed, i.e. if the
+		 * TermType is other than IRI. There can only be one Term Type
 		 */
+		int comboValue = 0; // 000
 
-		if(subjmap.getGraphMaps().size() > 0){
-					
-			graphsBlock= createGraphMapsBlock(subjmap.getGraphMaps(), termTypeBlock);
-						
-			System.out.println("2. Returned subjGraphBlock for output...\n");
-			PrettyPrintXML.printElement(graphsBlock);
-			
+		if (!subjmap.isTermTypeIRI()) {
+			comboValue = comboValue + ttValue;
 		}
-		
-		/*
-		 * Third, determine if there are any classes to be processed
-		 */
-		if(subjmap.getClasses().size() > 0){
-			
-			//classBlock = createClassBlock(subjmap);
+		if (subjmap.getGraphMaps().size() > 0) {
+			comboValue = comboValue + graphValue;
 		}
-		
-		
-		
-		if (subjmap.getClasses().size() == 0 && subjmap.isTermTypeIRI() && graphsBlock== null) {
-			/*
-			 * Do nothing, IRI is the default, nothing different was declared.
-			 * 
-			 * TODO, this much change to accommodate GraphMaps sub-block
-			 */
-			return;
+		if (subjmap.getClasses().size() > 0) {
+			comboValue = comboValue + classValue;
+		}
 
-		} else if (subjmap.getClasses().size() == 0 && !subjmap.isTermTypeIRI()) {
+		String comboValueBinStr = String.format("%3s", Integer.toBinaryString(comboValue)).replace(' ', '0');
 
-			Element noClassSubjMap = createNoClassSubjectMap(subjmap);
+		System.out.println("Binary representation for Class-Graph-TT is (C.G.T)... " + comboValue + " or "
+				+ comboValueBinStr + "\n");
 
-			/*
-			 * The Element passed in is a statement element, statement elements
-			 * always have only one (block) child element (blocks can have many)
-			 */
-			Element subjMapBlockElem = (Element) subjectMapStatement.getFirstChild();
-			subjMapBlockElem.appendChild(noClassSubjMap);
-			
-			PrettyPrintXML.printElement(subjMapBlockElem);
-			
-			if(graphsBlock!= null){
-				
-				graphsBlock= putBlockInNext(graphsBlock);
-				subjMapBlockElem.appendChild(graphsBlock);
-								
-			}
-			
-			PrettyPrintXML.printElement(subjMapBlockElem);
+		;
+		;
+		;
+		;
+		;
+		;
 
-		} else if (subjmap.getClasses().size() > 0) {
+		if (comboValue == 0) { // 000 Do nothing
 
-			List<Resource> classList = subjmap.getClasses();
-
-			Element classBlocksElm = null;
+		} else if (comboValue == 1) { // C.G.T 001
 
 			/*
-			 * Iterate over all classes found
+			 * Only a TermType is declared, no classes or graphs
 			 */
-			for (int i = 0; i < classList.size(); i++) {
 
-				if (i == 0) {
+			cgtBlock = createTermTypeOnlyBlock(subjmap);
 
-					/*
-					 * If the default TermType is found, create a TermMap block
-					 * without a TermType block in it
-					 */
-					if(subjmap.isTermTypeIRI()){
-						
-						classBlocksElm = createClassBlock((Resource) classList.get(i));
-						
-					} else {
-						
-						/*
-						 * Deal with the TermType other than the default (i.e. IRI)
-						 * when dealing with the first element
-						 */
-						classBlocksElm = createClassTTBlock((Resource) classList.get(i), subjmap);
-						
-					}
-					
-				} else {
+			System.out.println("cgtBlock for 001...\n");
+			PrettyPrintXML.printElement(cgtBlock);
 
-					/*
-					 * This is a subsequent class, so the previous one(s) need
-					 * to go inside a <next> element
-					 */
-					classBlocksElm = putBlockInNext(classBlocksElm);
-
-					// Create another class block
-					Element outerClassElement = createClassBlock((Resource) classList.get(i));
-
-					outerClassElement.appendChild(classBlocksElm);
-					/*
-					 * Reassign this to now become the current class block, all
-					 * subsequent classes will *nest* this
-					 */
-					classBlocksElm = outerClassElement;
-
-				}
-
-			}
-
-			
-			
-			/*
-			 * All of the above class block(s) need to be in a statement element,
-			 * depending on which have remined null, and which have become XML
-			 * elements
-			 */
-			Element termMapStatement = xml.createElement(CONST.STATEMENT);
-			termMapStatement.setAttribute(CONST.NAME, CONST.TERMMAP);
-			termMapStatement.appendChild(classBlocksElm);
+		} else if (comboValue == 2) { // C.G.T 010
 
 			/*
-			 * The Element passed in is a statement element, statement elements
-			 * always have only one (block) child element (blocks can have many)
+			 * One or more Graphs present only
 			 */
-			Element subjMapBlockElem = (Element) subjectMapStatement.getFirstChild();
-			subjMapBlockElem.appendChild(termMapStatement);
+			cgtBlock = createGraphOnlyBlock(subjmap);
+
+			System.out.println("cgtBlock for 010...\n");
+			PrettyPrintXML.printElement(cgtBlock);
+
+		} else if (comboValue == 3) { // C.G.T 011
+
+			cgtBlock = createTTAndGraphBlock(subjmap);
+
+			System.out.println("cgtBlock for 011...\n");
+			PrettyPrintXML.printElement(cgtBlock);
+
+		} else if (comboValue == 4) { // C.G.T 100
+
+			/*
+			 * One or more Classes present only
+			 */
+
+			cgtBlock = createClassOnlyBlock(subjmap);
+
+			System.out.println("cgtBlock for 100...\n");
+			PrettyPrintXML.printElement(cgtBlock);
+
+		} else if (comboValue == 5) { // C.G.T 101
+
+			cgtBlock = createTTAndClassBlock(subjmap);
+
+			System.out.println("cgtBlock for 101...\n");
+			PrettyPrintXML.printElement(cgtBlock);
+
+		} else if (comboValue == 6) { // C.G.T 110
+
+			/*
+			 * Graph(s) and Class(s) present
+			 */
+			cgtBlock = createGraphAndClassBlock(subjmap);
+
+			System.out.println("cgtBlock for 110...\n");
+			PrettyPrintXML.printElement(cgtBlock);
+
+		} else if (comboValue == 7) { // C.G.T 111
+			
+			cgtBlock = createTTGraphClassBlock(subjmap);
+			System.out.println("cgtBlock for 111...\n");
+			PrettyPrintXML.printElement(cgtBlock);
 
 		}
-	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 
-	/*
-	 * Creates a class block element with a term type declared, only used
-	 * when the term type is not the default (IRI)
-	 */
-	private Element createClassTTBlock(Resource subjectMapClass, SubjectMap subjmap) {
-		
-		/*
-		 * First create the term type block
-		 */
+		System.out.println();
 
-		Element subjectTermTypeFieldElement = xml.createElement(CONST.FIELD);
-		subjectTermTypeFieldElement.setAttribute(CONST.NAME, CONST.TERMTYPE_UC);
-
-		/*
-		 * Determine the type of the term, IRI by default, but may be a blank
-		 * node
-		 */
-		String termTypeVar = subjmap.isTermTypeIRI() ? CONST.TERMTYPE_IRI : CONST.TERMTYPE_BN;
-
-		subjectTermTypeFieldElement.appendChild(xml.createTextNode(termTypeVar));
-
-		Element termTypeBlockElement = xml.createElement(CONST.BLOCK);
-		termTypeBlockElement.setAttribute(CONST.TYPE, CONST.SUBJECTTERMTYPE);
-
-		termTypeBlockElement.appendChild(subjectTermTypeFieldElement);
-		
-		// Put this in a <next> element
-		
-		termTypeBlockElement = putBlockInNext(termTypeBlockElement);
-		
-		/*
-		 * Now create the class block
-		 */
-		String classPrefixName = getResourcePrefix(subjectMapClass);
-
-		Element classField = xml.createElement(CONST.FIELD);
-		classField.setAttribute(CONST.NAME, CONST.CLASS_UC);
-		classField.appendChild(xml.createTextNode(classPrefixName));
-
-		// Create block of type 'class' and add a field of name 'class' to it
-		Element termMapBlock = xml.createElement(CONST.BLOCK);
-		termMapBlock.setAttribute(CONST.TYPE, CONST.CLASS);
-
-		termMapBlock.appendChild(classField);
-		
-		/*
-		 * Append the Term Type (next) block also
-		 */
-		termMapBlock.appendChild(termTypeBlockElement);
-
-		return termMapBlock;
-		
 	}
 
+	
 	/*
-	 * Takes a class block element where there is more than one class declared
-	 * and puts it in a <next></next> element
+	 * Takes any block element and puts it in a <next></next> element
 	 */
 	private Element putBlockInNext(Element blockElm) {
 
@@ -285,41 +187,6 @@ public class ProcessSmTermMap {
 		nextElement.appendChild(blockElm);
 
 		return nextElement;
-
-	}
-
-	private Element createNoClassSubjectMap(SubjectMap subjmap) {
-
-		/*
-		 * Starting from the innermost element... Create a TERMTYPE field
-		 * element and populate it. Surround this in a block element of type
-		 * 'subjecttermtype'. Surround both these in a statement element with
-		 * name termmap.
-		 */
-
-		Element subjectTermTypeFieldElement = xml.createElement(CONST.FIELD);
-		subjectTermTypeFieldElement.setAttribute(CONST.NAME, CONST.TERMMAP_UC);
-
-		/*
-		 * Determine the type of the term, IRI by default, but may be a blank
-		 * node
-		 */
-		String termTypeVar = subjmap.isTermTypeIRI() ? CONST.TERMTYPE_IRI : CONST.TERMTYPE_BN;
-
-		subjectTermTypeFieldElement.appendChild(xml.createTextNode(termTypeVar));
-
-		Element termTypeBlockElement = xml.createElement(CONST.BLOCK);
-		termTypeBlockElement.setAttribute(CONST.TYPE, CONST.SUBJECTTERMTYPE);
-
-		termTypeBlockElement.appendChild(subjectTermTypeFieldElement);
-
-		// Create a stamement block to surround these and append the above as a
-		// child
-		Element termMapStatementElement = xml.createElement(CONST.STATEMENT);
-		termMapStatementElement.setAttribute(CONST.NAME, CONST.TERMMAP);
-		termMapStatementElement.appendChild(termTypeBlockElement);
-
-		return termMapStatementElement;
 
 	}
 
@@ -334,19 +201,18 @@ public class ProcessSmTermMap {
 		Map<String, String> pmap = (Map<String, String>) resource.getModel().getNsPrefixMap();
 
 		for (Entry<String, String> value : pmap.entrySet()) {
-			
-			//System.out.println(value.getValue() + "\n" + resource.getNameSpace() + "\n");
+
+			// System.out.println(value.getValue() + "\n" +
+			// resource.getNameSpace() + "\n");
 
 			if (value.getValue().equals(resource.getNameSpace())) {
-				
-				prefixAndName = value.getKey() + ":" + resource.getLocalName();
-				return prefixAndName; //value.getKey() + ":" + resource.getLocalName();				
-			} else {
-				
-				prefixAndName = "<" + resource.toString() + ">";
-				
-			}
 
+				prefixAndName = value.getKey() + ":" + resource.getLocalName();
+				return prefixAndName; 
+				
+			} else {
+				prefixAndName = "<" + resource.toString() + ">";
+			}
 		}
 
 		return prefixAndName;
@@ -354,7 +220,7 @@ public class ProcessSmTermMap {
 	}
 
 	/*
-	 * Creates a single class block with no TermType elements
+	 * Creates a single class block
 	 */
 	private Element createClassBlock(Resource subjmapClass) {
 
@@ -369,170 +235,81 @@ public class ProcessSmTermMap {
 		termMapBlock.setAttribute(CONST.TYPE, CONST.CLASS);
 
 		termMapBlock.appendChild(classField);
-				
+
 		return termMapBlock;
 	}
-	
-	
+
 	/*
-	 * Creates a block for a single graph map, or a nest
-	 * of blocks for a number of graph maps using <next>
-	 * blocks.
+	 * Create a block for a single graph map
 	 */
-	private Element createGraphMapsBlock(List<GraphMap> gList, Element termTypeBlock){
-		
-		
-		
-		System.out.println("gList size... " + gList.size());
-		
-		Element savedGraphBlock = null;
-		Element basicGraphBlock = null;
-		
-		for(int i = 0; i < gList.size(); i++){
-			
-			GraphMap gm = gList.get(i);
-			
-			// constant, column or template
-			
-			String termMapTypeStr = "";
-			String prefixAndName = "";
-			
-			
+
+	private Element createGraphBlock(GraphMap graphMap) {
+
+		/*
+		 * Determine if the graph map is a constant, column or template
+		 */
+
+		String termMapTypeStr = "";
+		String prefixAndName = "";
+
+		/*
+		 * Prepare these variables for graph block creation,
+		 * this depends on if it is a constant, column or template
+		 */
+		if (graphMap.isConstantValuedTermMap()) {
+
+			termMapTypeStr = CONST.CONSTANT_UC;
 			/*
-			 * Prepare these variables for graph block creation
+			 * Prefix:name set need for constant only
 			 */
-			if(gm.isConstantValuedTermMap()) {
-				
-				termMapTypeStr = CONST.CONSTANT_UC;
-				/*
-				 *  Prefix:name set need for constant only
-				 */
-				prefixAndName = getResourcePrefix(gm.getConstant().asResource());
-				
-			} else if(gm.isColumnValuedTermMap()) {
-				termMapTypeStr = CONST.COLUMN_UC;
-				prefixAndName = gm.getColumn().toString(); 
-			} else {
-				termMapTypeStr = CONST.TEMPLATE_UC;
-				prefixAndName = gm.getTemplate().toString();
-			}
-			
+			prefixAndName = getResourcePrefix(graphMap.getConstant().asResource());
 
-//			System.out.println("termMapTypeStr " + termMapTypeStr + " " + i);
-//			System.out.println("prefixAndName " + prefixAndName  + " " + i);
-
-
-			
-
-
-			if (i < (gList.size() -1)) {				
-				/*
-				 * There is more than one graph, and the current graph
-				 * is a 1st, 2nd, etc of many, but not the last one,
-				 * so <next> blocks are required
-				 */
-
-				basicGraphBlock = createSubjGraphBlock(termMapTypeStr, prefixAndName);
-
-				/*
-				 * If this is the first/only graph, there will be no saved graph
-				 */
-				if(savedGraphBlock != null){
-					basicGraphBlock.appendChild(savedGraphBlock);
-				}
-
-				/*
-				 * If this is the first graph, then next a non-null
-				 * termTypeBlock in it, if available.
-				 * 
-				 * Once this happens, it should not be done again
-				 */
-				if(i == 0){
-				
-					if(termTypeBlock != null){
-						
-						System.out.println("Adding TT in first block...\n");
-						
-						termTypeBlock = putBlockInNext(termTypeBlock);
-						basicGraphBlock.appendChild(termTypeBlock);
-						
-					}
-				
-					/*
-					 * As this is not the last graph, use a <next> block
-					 */
-					basicGraphBlock = putBlockInNext(basicGraphBlock);
-				
-				}
-				
-				/*
-				 * Save this for the next iteration
-				 */
-				savedGraphBlock = basicGraphBlock;
-				
-				System.out.println("savedGraphBlock for MID-WAY GRAPH...\n");
-				PrettyPrintXML.printElement(savedGraphBlock);				
-
-
-			} else if (i == (gList.size() -1)) {
-				/*
-				 * There is only one graph or the current graph
-				 * is the last one. It should be returned, with its
-				 * nested blocks (of present), but not surrounded by a next
-				 */
-				
-				basicGraphBlock = createSubjGraphBlock(termMapTypeStr, prefixAndName);
-					
-				
-				/*
-				 * If this is the first and only graph, then defend against
-				 * savedGraphBlock being null (as initialised).
-				 * 
-				 * If savedGraphBLock is null at this point, then there
-				 * is only one Graph being processed.
-				 * 
-				 * If savedGraphBlock is !null, then termTypeBlock will 
-				 * be nested within it.
-				 * 
-				 *  However, if this is the only graph, the above if- will
-				 *  never be entered, and a non-null termTpeBlock must be
-				 *  added here 
-				 */
-				if(savedGraphBlock != null){
-					
-					basicGraphBlock.appendChild(savedGraphBlock);
-					
-				} else if (termTypeBlock != null && i == 0){
-					
-					termTypeBlock = putBlockInNext(termTypeBlock);
-					basicGraphBlock.appendChild(termTypeBlock);
-					
-				}
-
-				System.out.println("subjGraphBlock for LAST GRAPH...\n");
-				PrettyPrintXML.printElement(basicGraphBlock);				
-				
-			}
-			
+		} else if (graphMap.isColumnValuedTermMap()) {
+			termMapTypeStr = CONST.COLUMN_UC;
+			prefixAndName = graphMap.getColumn().toString();
+		} else {
+			termMapTypeStr = CONST.TEMPLATE_UC;
+			prefixAndName = graphMap.getTemplate().toString();
 		}
-		
-		return basicGraphBlock;
-	
+
+		/*
+		 * Create the inner field elements first
+		 */
+		Element fieldTermMap = xml.createElement(CONST.FIELD);
+		fieldTermMap.setAttribute(CONST.NAME, CONST.TERMMAP_UC);
+		fieldTermMap.appendChild(xml.createTextNode(termMapTypeStr));
+
+		Element fieldTermMapValue = xml.createElement(CONST.TERMMAPVALUE_UC);
+		fieldTermMapValue.setAttribute(CONST.NAME, CONST.TERMMAPVALUE_UC);
+		fieldTermMapValue.appendChild(xml.createTextNode(prefixAndName));
+
+		/*
+		 * Then append these both to a <block type="subjectgraphtermap">
+		 */
+		Element subjGraphBlock = xml.createElement(CONST.BLOCK);
+		subjGraphBlock.setAttribute(CONST.TYPE, CONST.SUBJECTGRAPHTERMAP);
+		subjGraphBlock.appendChild(fieldTermMap);
+		subjGraphBlock.appendChild(fieldTermMapValue);
+
+		return subjGraphBlock;
+
 	}
 
+
+
 	private Element createSubjGraphBlock(String termMapTypeStr, String prefixAndName) {
-		
+
 		/*
-		 * Create the inner field elements 
+		 * Create the inner field elements
 		 */
 		Element fieldTermMap = xml.createElement(CONST.FIELD);
 		fieldTermMap.setAttribute(CONST.NAME, CONST.TERMMAP_UC);
 		fieldTermMap.appendChild(xml.createTextNode(CONST.COLUMN_UC));
-		
+
 		Element fieldTermMapValue = xml.createElement(CONST.TERMMAPVALUE_UC);
 		fieldTermMapValue.setAttribute(CONST.NAME, CONST.TERMMAPVALUE_UC);
 		fieldTermMapValue.appendChild(xml.createTextNode(prefixAndName));
-		
+
 		/*
 		 * Append these both to a <block type="subjectgraphtermap">
 		 */
@@ -540,17 +317,16 @@ public class ProcessSmTermMap {
 		subjGraphBlock.setAttribute(CONST.TYPE, CONST.SUBJECTGRAPHTERMAP);
 		subjGraphBlock.appendChild(fieldTermMap);
 		subjGraphBlock.appendChild(fieldTermMapValue);
-		
-		
+
 		return subjGraphBlock;
 	}
 
 	/*
-	 * Creates a block element which contains 
+	 * Creates a block element which contains
 	 */
-	
-	private Element createTermTypeBlock(SubjectMap subjmap){
-		
+
+	private Element createTermTypeOnlyBlock(SubjectMap subjmap) {
+
 		/*
 		 * First create the term type field elements
 		 */
@@ -568,7 +344,476 @@ public class ProcessSmTermMap {
 		termTypeBlock.setAttribute(CONST.TYPE, CONST.SUBJECTTERMTYPE);
 
 		termTypeBlock.appendChild(TermTypeField);
-		
+
 		return termTypeBlock;
+	}
+
+	/*
+	 * Helper method to create a 'graph only' block
+	 */
+	private Element createGraphOnlyBlock(SubjectMap subjmap) { // final solution
+
+		List<GraphMap> graphList = subjmap.getGraphMaps();
+
+		System.out.println("gList size... " + graphList.size());
+
+		Element savedGraphBlock = null;
+		Element basicGraphBlock = null;
+
+		for (int i = 0; i < graphList.size(); i++) {
+
+			GraphMap gm = graphList.get(i);
+
+			String termMapTypeStr = "";
+			String prefixAndName = "";
+
+			/*
+			 * Prepare these variables for graph block creation
+			 */
+			if (gm.isConstantValuedTermMap()) {
+
+				termMapTypeStr = CONST.CONSTANT_UC;
+				/*
+				 * Prefix:name set need for constant only
+				 */
+				prefixAndName = getResourcePrefix(gm.getConstant().asResource());
+
+			} else if (gm.isColumnValuedTermMap()) {
+				termMapTypeStr = CONST.COLUMN_UC;
+				prefixAndName = gm.getColumn().toString();
+			} else {
+				termMapTypeStr = CONST.TEMPLATE_UC;
+				prefixAndName = gm.getTemplate().toString();
+			}
+
+			if (i < (graphList.size() - 1)) {
+				/*
+				 * There is more than one graph, and the current graph is a 1st,
+				 * 2nd, etc of many, but not the last one. Therefore, <next>
+				 * blocks are required
+				 */
+
+				basicGraphBlock = createSubjGraphBlock(termMapTypeStr, prefixAndName);
+
+				/*
+				 * If this is the first/only graph, there will be no saved graph
+				 */
+				if (savedGraphBlock != null) {
+					basicGraphBlock.appendChild(savedGraphBlock);
+				}
+
+				/*
+				 * This is not the last graph, so use a <next> block
+				 */
+				basicGraphBlock = putBlockInNext(basicGraphBlock);
+
+				/*
+				 * Save this for the next iteration
+				 */
+				savedGraphBlock = basicGraphBlock;
+
+			} else if (i == (graphList.size() - 1)) {
+				/*
+				 * There is only one graph or the current graph is the last one.
+				 * It should be returned but not surrounded by a <next>
+				 */
+
+				basicGraphBlock = createSubjGraphBlock(termMapTypeStr, prefixAndName);
+
+				/*
+				 * If this is the first and only graph, then defend against
+				 * savedGraphBlock being null (as initialised).
+				 */
+
+				if (savedGraphBlock != null) {
+
+					/*
+					 * Recall, any savedGraphBlock will already be surrounded by
+					 * a <next> block
+					 */
+					basicGraphBlock.appendChild(savedGraphBlock);
+
+				}
+				// System.out.println("subjGraphBlock for LAST GRAPH...\n");
+				// PrettyPrintXML.printElement(basicGraphBlock);
+
+			}
+
+		}
+
+		return basicGraphBlock;
+
+	}
+
+	private Element createClassOnlyBlock(SubjectMap subjmap) { // final solution
+
+		List<Resource> classList = subjmap.getClasses();
+
+		Element basicClassBlock = null;
+		Element savedClassBlock = null;
+
+		/*
+		 * Iterate over all classes found
+		 */
+		for (int i = 0; i < classList.size(); i++) {
+
+			if (i < (classList.size() - 1)) {
+				/*
+				 * There is more than one class, and the current class is the
+				 * 1st, 2nd, etc of many, but not the last one. Therefore,
+				 * <next> blocks are required
+				 */
+				basicClassBlock = createClassBlock((Resource) classList.get(i));
+
+				/*
+				 * If this is the first of many classes, then there will be no
+				 * saved class
+				 */
+				if (savedClassBlock != null) {
+					basicClassBlock.appendChild(savedClassBlock);
+				}
+
+				/*
+				 * This is not the last graph, so use a <next> block
+				 */
+				basicClassBlock = putBlockInNext(basicClassBlock);
+
+				/*
+				 * Save this for the next iteration
+				 */
+				savedClassBlock = basicClassBlock;
+
+			} else if (i == (classList.size() - 1)) {
+				/*
+				 * There is only one class or the current class is the last one.
+				 * It should be returned but not surrounded by a <next>
+				 */
+
+				basicClassBlock = createClassBlock((Resource) classList.get(i));
+
+				if (savedClassBlock != null) {
+
+					/*
+					 * Recall, any savedGraphBlock will already be surrounded by
+					 * a <next> block
+					 */
+					basicClassBlock.appendChild(savedClassBlock);
+
+				}
+
+			}
+
+		}
+
+		return basicClassBlock;
+
+	}
+
+	private Element createGraphAndClassBlock(SubjectMap subjmap) { // final
+																	// solution
+
+		/*
+		 * The graph block is nested within the class block, with the first
+		 * class processed
+		 */
+		Element allGraphsBlock = createGraphOnlyBlock(subjmap);
+
+		Element graphAndClassBlock = null;
+		Element savedGraphAndClassBlock = null;
+
+		List<Resource> classList = subjmap.getClasses();
+
+		for (int i = 0; i < classList.size(); i++) {
+
+			/*
+			 * There is more than one class, and this is not the last
+			 */
+			if (i < (classList.size() - 1)) {
+
+				graphAndClassBlock = createClassBlock(classList.get(i));
+
+				/*
+				 * If this is the first class, append allGraphsBlock
+				 */
+				if (i == 0) {
+					allGraphsBlock = putBlockInNext(allGraphsBlock);
+					graphAndClassBlock.appendChild(allGraphsBlock);
+				}
+
+				/*
+				 * If savedGraphAndClassBlock is not null, add it
+				 */
+				if (savedGraphAndClassBlock != null) {
+					graphAndClassBlock.appendChild(savedGraphAndClassBlock);
+				}
+
+				/*
+				 * As this is NOT the last class, put graphAndClassBlock in a
+				 * <next> block
+				 */
+				graphAndClassBlock = putBlockInNext(graphAndClassBlock);
+
+				savedGraphAndClassBlock = graphAndClassBlock;
+
+			} else if (i == (classList.size() - 1)) {
+				/*
+				 * This is only class, or the last one, no <needed>
+				 */
+				graphAndClassBlock = createClassBlock(classList.get(i));
+
+				/*
+				 * If this is the first and only, append the graph element
+				 */
+				if (i == 0) {
+					allGraphsBlock = putBlockInNext(allGraphsBlock);
+					graphAndClassBlock.appendChild(allGraphsBlock);
+				}
+
+				/*
+				 * If this is the last of many classes, append previously saved
+				 * elements
+				 */
+				if (savedGraphAndClassBlock != null) {
+					graphAndClassBlock.appendChild(savedGraphAndClassBlock);
+				}
+
+			}
+
+		}
+
+		return graphAndClassBlock;
+	}
+
+	private Element createTTAndClassBlock(SubjectMap subjmap) { // final
+																// solution
+
+		/*
+		 * The graph block is nested within the class block, with the first
+		 * class processed
+		 */
+		Element termTypeBlock = createTermTypeOnlyBlock(subjmap);
+
+		Element ttAndClassBlock = null;
+		Element savedTtAndClassBlock = null;
+
+		List<Resource> classList = subjmap.getClasses();
+
+		for (int i = 0; i < classList.size(); i++) {
+
+			/*
+			 * There is more than one class, and this is not the last
+			 */
+			if (i < (classList.size() - 1)) {
+
+				ttAndClassBlock = createClassBlock(classList.get(i));
+
+				/*
+				 * If this is the first class, append allGraphsBlock
+				 */
+				if (i == 0) {
+					termTypeBlock = putBlockInNext(termTypeBlock);
+					ttAndClassBlock.appendChild(termTypeBlock);
+				}
+
+				/*
+				 * If savedGraphAndClassBlock is not null, add it
+				 */
+				if (savedTtAndClassBlock != null) {
+					ttAndClassBlock.appendChild(savedTtAndClassBlock);
+				}
+
+				/*
+				 * As this is NOT the last class, put graphAndClassBlock in a
+				 * <next> block
+				 */
+				ttAndClassBlock = putBlockInNext(ttAndClassBlock);
+
+				savedTtAndClassBlock = ttAndClassBlock;
+
+			} else if (i == (classList.size() - 1)) {
+				/*
+				 * This is only class, or the last one, no <needed>
+				 */
+				ttAndClassBlock = createClassBlock(classList.get(i));
+
+				/*
+				 * If this is the first and only, append the graph element
+				 */
+				if (i == 0) {
+					termTypeBlock = putBlockInNext(termTypeBlock);
+					ttAndClassBlock.appendChild(termTypeBlock);
+				}
+
+				/*
+				 * If this is the last of many classes, append previously saved
+				 * elements
+				 */
+				if (savedTtAndClassBlock != null) {
+					ttAndClassBlock.appendChild(savedTtAndClassBlock);
+				}
+
+			}
+
+		}
+
+		return ttAndClassBlock;
+	}
+
+	/*
+	 * Graph and TT block
+	 */
+	private Element createTTAndGraphBlock(SubjectMap subjmap) { // final
+																// solution
+
+		/*
+		 * The graph block is nested within the class block, with the first
+		 * class processed
+		 */
+		Element termTypeBlock = createTermTypeOnlyBlock(subjmap);
+
+		Element ttAndGraphBlock = null;
+		Element savedTtAndGraphBlock = null;
+
+		List<GraphMap> graphList = subjmap.getGraphMaps();
+
+		for (int i = 0; i < graphList.size(); i++) {
+
+			/*
+			 * There is more than one class, and this is not the last
+			 */
+			if (i < (graphList.size() - 1)) {
+
+				ttAndGraphBlock = createGraphBlock(graphList.get(i));
+
+				/*
+				 * If this is the first class, append allGraphsBlock
+				 */
+				if (i == 0) {
+					termTypeBlock = putBlockInNext(termTypeBlock);
+					ttAndGraphBlock.appendChild(termTypeBlock);
+				}
+
+				/*
+				 * If savedTtAndGraphBlock is not null, add it
+				 */
+				if (savedTtAndGraphBlock != null) {
+					ttAndGraphBlock.appendChild(savedTtAndGraphBlock);
+				}
+
+				/*
+				 * As this is NOT the last class, put ttAndGraphBlock in a
+				 * <next> block
+				 */
+				ttAndGraphBlock = putBlockInNext(ttAndGraphBlock);
+
+				savedTtAndGraphBlock = ttAndGraphBlock;
+
+			} else if (i == (graphList.size() - 1)) {
+				/*
+				 * This is only class, or the last one, no <needed>
+				 */
+				ttAndGraphBlock = createGraphBlock(graphList.get(i));
+
+				/*
+				 * If this is the first and only, append the graph element
+				 */
+				if (i == 0) {
+					termTypeBlock = putBlockInNext(termTypeBlock);
+					ttAndGraphBlock.appendChild(termTypeBlock);
+				}
+
+				/*
+				 * If this is the last of many classes, append previously saved
+				 * elements
+				 */
+				if (savedTtAndGraphBlock != null) {
+					ttAndGraphBlock.appendChild(savedTtAndGraphBlock);
+				}
+
+			}
+
+		}
+
+		return ttAndGraphBlock;
+	}
+	
+	
+	/*
+	 * Create a block for a Termtype, graph(s) and class(es) 
+	 */
+	private Element createTTGraphClassBlock(SubjectMap subjmap){
+		
+		/*
+		 * By convention, Termtype blocks are put in graphs,
+		 * then both put in a class
+		 */
+		Element ttAndGraphBlock = createTTAndGraphBlock(subjmap);
+
+		Element ttGraphClassBlock = null;
+		Element savedTtGraphClassBlock = null;
+
+		List<Resource> classList = subjmap.getClasses();
+
+		for (int i = 0; i < classList.size(); i++) {
+
+			/*
+			 * There is more than one class, and this is not the last
+			 */
+			if (i < (classList.size() - 1)) {
+
+				ttGraphClassBlock = createClassBlock(classList.get(i));
+
+				/*
+				 * If this is the first class, append allGraphsBlock
+				 */
+				if (i == 0) {
+					ttAndGraphBlock = putBlockInNext(ttAndGraphBlock);
+					ttGraphClassBlock.appendChild(ttAndGraphBlock);
+				}
+
+				/*
+				 * If savedGraphAndClassBlock is not null, add it
+				 */
+				if (savedTtGraphClassBlock != null) {
+					ttGraphClassBlock.appendChild(savedTtGraphClassBlock);
+				}
+
+				/*
+				 * As this is NOT the last class, put graphAndClassBlock in a
+				 * <next> block
+				 */
+				ttGraphClassBlock = putBlockInNext(ttGraphClassBlock);
+
+				savedTtGraphClassBlock = ttGraphClassBlock;
+
+			} else if (i == (classList.size() - 1)) {
+				/*
+				 * This is only class, or the last one, no <needed>
+				 */
+				ttGraphClassBlock = createClassBlock(classList.get(i));
+
+				/*
+				 * If this is the first and only, append the graph element
+				 */
+				if (i == 0) {
+					ttAndGraphBlock = putBlockInNext(ttAndGraphBlock);
+					ttGraphClassBlock.appendChild(ttAndGraphBlock);
+				}
+
+				/*
+				 * If this is the last of many classes, append previously saved
+				 * elements
+				 */
+				if (savedTtGraphClassBlock != null) {
+					ttGraphClassBlock.appendChild(savedTtGraphClassBlock);
+				}
+
+			}
+
+		}
+
+		return ttGraphClassBlock;
+		
+		
 	}
 }

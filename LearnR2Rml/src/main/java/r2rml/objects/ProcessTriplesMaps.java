@@ -43,20 +43,23 @@ public class ProcessTriplesMaps {
 			xml = plt.processLogicalTable(tmap, tripmapStatementElem);
 
 			/*
-			 * Next up... Subject Map
+			 * Next up... Subject Map. There can only be one Subj Map
+			 * per TriplesMap.
 			 */
 			ProcessSubjectMap psm = new ProcessSubjectMap(xml);
-
 			psm.processSubjectMap(tmap, tripmapStatementElem);
 			
 			/*
-			 * And then, Predicate Object Maps
+			 * On to Predicate Object Map(s). For a given TriplesMap,
+			 * there may be more than one Predicate Object Map and these
+			 * must be nested in <next> elements in the XML output.
 			 */
-
 			ProcessPredicateObjectMaps ppom = new ProcessPredicateObjectMaps(xml);
+			ppom.processPredicateObjectMaps(tmap, tripmapStatementElem);
 
-			xml = ppom.processPredicateObjectMaps(tmap, tripmapStatementElem);
-
+			
+			
+			
 			/*
 			 * Finally, get the root block element of the document and attach
 			 * the triplesmap statement element to it

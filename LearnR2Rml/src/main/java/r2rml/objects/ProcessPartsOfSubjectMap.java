@@ -22,11 +22,11 @@ import xmlutilities.PrettyPrintXML;
  *
  */
 
-public class ProcessSmTermMap {
+public class ProcessPartsOfSubjectMap {
 
 	private Document xml;
 
-	public ProcessSmTermMap(Document xml) {
+	public ProcessPartsOfSubjectMap(Document xml) {
 
 		this.xml = xml;
 
@@ -41,7 +41,7 @@ public class ProcessSmTermMap {
 	 * @param subjectMapStatement
 	 * @param subjmap
 	 */
-	public void processTermMap(Element subjectMapStatement, SubjectMap subjmap) {
+	public void processPartsSubjMap(Element subjectMapStatement, SubjectMap subjmap) {
 
 		/*
 		 * Three entities relating to SubjectMaps are converted to XML in this
@@ -72,9 +72,9 @@ public class ProcessSmTermMap {
 		 * binary format of that number is used.
 		 */
 
-		int ttValue = 1; // 001
-		int graphValue = 2; // 010
-		int classValue = 4; // 100
+		final int ttValue = 1; // 001
+		final int graphValue = 2; // 010
+		final int classValue = 4; // 100
 
 		/*
 		 * First, determine if an Element for TermType is needed, i.e. if the
@@ -149,38 +149,32 @@ public class ProcessSmTermMap {
 
 		}
 
-		System.out.println("cgtBlock for... " + comboValueBinStr + "\n");
+		System.out.println("C.G.T... " + comboValueBinStr + "\n");
 		PrettyPrintXML.printElement(cgtBlock);
 
 		System.out.println();
-		
+
 		/*
-		 * Only add this block if it has changed
-		 * from being null (as initialised)
+		 * Only add this block if it has changed from being null (as
+		 * initialised)
 		 */
-		if(cgtBlock != null){
-			
-			
-			
+		if (cgtBlock != null) {
+
 			// The first child of a statement is always a <block>
 			Element subjectMapBlock = (Element) subjectMapStatement.getFirstChild();
-			
+
 			/*
 			 * Create a termmap statement
 			 */
 			Element termMapStatement = xml.createElement(CONST.STATEMENT);
 			termMapStatement.setAttribute(CONST.NAME, CONST.TERMMAP);
-			
+
 			termMapStatement.appendChild(cgtBlock);
 			/*
 			 * Append all this to the subjectMapBlock
 			 */
 			subjectMapBlock.appendChild(termMapStatement);
-			
-			
-			
-			
-			
+
 		}
 
 	}
@@ -188,10 +182,15 @@ public class ProcessSmTermMap {
 	/*
 	 * METHODS TO CREATE THE BLOCKS WHICH ARE RETURNED. SOME OF THESE ARE USED
 	 * AND REUSED BY OTHERS
-	 * 
-	 * Creates a block element which contains only a term type
 	 */
-
+	
+	/**
+	 * Creates a block element which contains only a term type
+	 * 
+	 * @param subjmap
+	 * @return
+	 */
+	
 	private Element createTermTypeOnlyBlock(SubjectMap subjmap) {
 
 		/*
@@ -215,11 +214,13 @@ public class ProcessSmTermMap {
 		return termTypeBlock;
 	}
 
-	/*
+	/**
 	 * Helper method to create a 'graph only' block
+	 * @param subjmap
+	 * @return
 	 */
-	private Element createGraphOnlyBlock(SubjectMap subjmap) { // final solution
-
+	private Element createGraphOnlyBlock(SubjectMap subjmap) {
+		
 		List<GraphMap> graphList = subjmap.getGraphMaps();
 
 		System.out.println("gList size... " + graphList.size());
@@ -291,7 +292,6 @@ public class ProcessSmTermMap {
 				 * If this is the first and only graph, then defend against
 				 * savedGraphBlock being null (as initialised).
 				 */
-
 				if (savedGraphBlock != null) {
 
 					/*
@@ -312,7 +312,12 @@ public class ProcessSmTermMap {
 
 	}
 
-	private Element createClassOnlyBlock(SubjectMap subjmap) { // final solution
+	/**
+	 * Creates a Class only block
+	 * @param subjmap
+	 * @return
+	 */
+	private Element createClassOnlyBlock(SubjectMap subjmap) {
 
 		List<Resource> classList = subjmap.getClasses();
 
@@ -376,6 +381,10 @@ public class ProcessSmTermMap {
 
 	}
 
+	/**
+	 * Creates a Graph Map Block and nests it within a
+	 * Class Map block. 
+	 */
 	private Element createGraphAndClassBlock(SubjectMap subjmap) {
 		/*
 		 * The graph block is nested within the class block, with the first
@@ -449,10 +458,14 @@ public class ProcessSmTermMap {
 		return graphAndClassBlock;
 	}
 
+	/**
+	 * Create a TermType, then nest it in a Class Block,
+	 * used when there is no Graph present
+	 */
 	private Element createTTAndClassBlock(SubjectMap subjmap) {
 
 		/*
-		 * The graph block is nested within the class block, with the first
+		 * The TermType block is nested within the class block, with the first
 		 * class processed
 		 */
 		Element termTypeBlock = createTermTypeOnlyBlock(subjmap);
@@ -523,8 +536,8 @@ public class ProcessSmTermMap {
 		return ttAndClassBlock;
 	}
 
-	/*
-	 * Graph and TT block
+	/**
+	 * Creates a Graph and TermType block
 	 */
 	private Element createTTAndGraphBlock(SubjectMap subjmap) {
 
@@ -600,7 +613,7 @@ public class ProcessSmTermMap {
 		return ttAndGraphBlock;
 	}
 
-	/*
+	/**
 	 * Create a block for a Termtype, graph(s) and class(es)
 	 */
 	private Element createTTGraphClassBlock(SubjectMap subjmap) {
@@ -678,7 +691,7 @@ public class ProcessSmTermMap {
 
 	}
 
-	/*
+	/**
 	 * HELPER METHODS ARE BELOW HERE...
 	 * 
 	 * Takes any block element and puts it in a <next></next> element
@@ -742,10 +755,9 @@ public class ProcessSmTermMap {
 		return termMapBlock;
 	}
 
-	/*
+	/**
 	 * Create a block for a single graph map
 	 */
-
 	private Element createGraphBlock(GraphMap graphMap) {
 
 		/*
@@ -798,6 +810,10 @@ public class ProcessSmTermMap {
 
 	}
 
+	/**
+	 * Creates a basic block for a Graph Map, as part
+	 * of a Subject Map
+	 */
 	private Element createSubjGraphBlock(String termMapTypeStr, String prefixAndName) {
 
 		/*
@@ -805,7 +821,7 @@ public class ProcessSmTermMap {
 		 */
 		Element fieldTermMap = xml.createElement(CONST.FIELD);
 		fieldTermMap.setAttribute(CONST.NAME, CONST.TERMMAP_UC);
-		fieldTermMap.appendChild(xml.createTextNode(CONST.COLUMN_UC));
+		fieldTermMap.appendChild(xml.createTextNode(termMapTypeStr));
 
 		Element fieldTermMapValue = xml.createElement(CONST.FIELD);
 		fieldTermMapValue.setAttribute(CONST.NAME, CONST.TERMMAPVALUE_UC);

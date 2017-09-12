@@ -196,4 +196,130 @@ seeing 2/more classes... 1
 
 
 
+==========  POMs ===================
+
+
+
+<?xml version="1.0"?>
+<xml xmlns="http://www.w3.org/1999/xhtml">
+  <block type="mapping" deletable="false" x="9" y="3">
+    <statement name="mapping">
+      <block type="prefix">
+        <field name="PREFIX">foaf</field>
+        <field name="URI">http://xmlns.com/foaf/0.1/</field>
+        <next>
+          <block type="prefix">
+            <field name="PREFIX">ex</field>
+            <field name="URI">http://example.org/</field>
+          </block>
+        </next>
+      </block>
+    </statement>
+    <statement name="triplesmap">
+      <block type="triplesmap">
+        <field name="TRIPLEMAPNAME">TripleMap1</field>
+        <statement name="logicaltable">
+          <block type="tablesqlquery">
+            <mutation sql="employees"/>
+            <field name="TABLESQLQUERY">table</field>
+          </block>
+        </statement>
+        <statement name="subjectmap">
+          <block type="subjectmap">
+            <field name="TERMMAP">TEMPLATE</field>
+            <field name="TERMMAPVALUE">http://example/org/employee/{id}</field>
+            <statement name="termmap">
+              <block type="class">
+                <field name="CLASS">foaf:Person</field>
+                <next>
+                  <block type="class">
+                    <field name="CLASS">ex:Person</field>
+                  </block>
+                </next>
+              </block>
+            </statement>
+          </block>
+        </statement>
+
+
+        <statement name="predicateobjectmap">
+          <block type="predicateobjectmap">
+            <statement name="ppredicateobjectmap">
+              <block type="predicatemap">
+                <field name="TERMMAP">CONSTANT</field>
+                <field name="TERMMAPVALUE">foaf:givenName</field>
+                <next>
+                  <block type="predicatemap">
+                    <field name="TERMMAP">CONSTANT</field>
+                    <field name="TERMMAPVALUE">foaf:familyName</field>
+                    <next>
+                      <block type="predicatemap">
+                        <field name="TERMMAP">CONSTANT</field>
+                        <field name="TERMMAPVALUE">foaf:middleName</field>
+                      </block>
+                    </next>
+                  </block>
+                </next>
+              </block>
+            </statement>
+            <statement name="opredicateobjectmap">
+              <block type="objectmap">
+                <field name="TERMMAP">COLUMN</field>
+                <field name="TERMMAPVALUE">first_name</field>
+                <statement name="termmap">
+                  <block type="objecttermtype">
+                    <field name="TERMTYPE">termtypeliteral</field>
+                    <value name="termtypevalue">
+                      <block type="objectdatatype">
+                        <field name="DATATYPE">xsd:string</field>
+                      </block>
+                    </value>
+                  </block>
+                </statement>
+                <next>
+                  <block type="objectmap">
+                    <field name="TERMMAP">COLUMN</field>
+                    <field name="TERMMAPVALUE">last_name</field>
+                  </block>
+                </next>
+              </block>
+            </statement>
+
+            <next>    <!--  <<<<< start of 2nd POM -->
+              <block type="predicateobjectmap">
+                <statement name="ppredicateobjectmap">
+                  <block type="predicatemap">
+                    <field name="TERMMAP">CONSTANT</field>
+                    <field name="TERMMAPVALUE">foaf:familyName</field>
+                  </block>
+                </statement>
+                <statement name="opredicateobjectmap">
+                  <block type="objectmap">
+                    <field name="TERMMAP">TEMPLATE</field>
+                    <field name="TERMMAPVALUE">http://example.test</field>
+                    <statement name="termmap">
+                      <block type="objecttermtype">
+                        <field name="TERMTYPE">termtypeiri</field>
+                      </block>
+                    </statement>
+                  </block>
+                </statement>
+                <statement name="graphmap">
+                  <block type="predicategraphtermap">
+                    <field name="TERMMAP">CONSTANT</field>
+                    <field name="TERMMAPVALUE">ex:graph1</field>
+                    <next>
+                      <block type="predicategraphtermap">
+                        <field name="TERMMAP">CONSTANT</field>
+                        <field name="TERMMAPVALUE">ex:graph2</field>
+                      </block>
+                    </next>
+                  </block>
+                </statement>
+              </block>
+            </next>   <!-- <<<<<< end of 2nd POM   -->
+
+          </block>
+        </statement>
+
 

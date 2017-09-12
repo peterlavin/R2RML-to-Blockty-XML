@@ -66,6 +66,8 @@ public final class CONST {
 
 	public static final String SUBJECTMAP = "subjectmap";
 
+	public static final String PREDICATEOBJECTMAP = "predicateobjectmap";
+
 
 
 

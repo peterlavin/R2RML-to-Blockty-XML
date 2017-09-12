@@ -65,7 +65,7 @@ public class ProcessSubjectMap {
 		 * parts need to be inserted into the triplesmap block element within
 		 * this statement element
 		 */	
-		insertBasicSubjMap(tripmapStatementElem, termMapTypeStr, termMapVariableStr);
+		createBasicSubjMap(tripmapStatementElem, termMapTypeStr, termMapVariableStr);
 
 		/*
 		 * If there is anything other than the default TermType (i.e not IRI),
@@ -104,21 +104,9 @@ public class ProcessSubjectMap {
 		 * ProcessTermMap is called, even if not needed, this is determined in
 		 * the ProcessTermMap class.
 		 */
-		ProcessSmTermMap ptm = new ProcessSmTermMap(xml);
-		ptm.processTermMap(subjMapStatementElm, subjmap);
+		ProcessPartsOfSubjectMap ppsm = new ProcessPartsOfSubjectMap(xml);
+		ppsm.processPartsSubjMap(subjMapStatementElm, subjmap);
 
-		
-//		/*
-//		 * ProcessSmGraphMap is called, the required actions (if any)
-//		 * are determined in the ProcessSmGraphMap class. 
-//		 */
-//		
-//		ProcessSmGraphMap pgm = new ProcessSmGraphMap(xml);
-//		
-//		pgm.processSmGraphMap(subjMapStatementElm, subjmap);
-
-//		System.out.println("FINAL TRIPLESMAP STATEMENT after TM and GM...");
-//		PrettyPrintXML.printElement(tripmapStatementElem);
 
 	}
 
@@ -126,7 +114,7 @@ public class ProcessSubjectMap {
 	 * Adds a basic SubjectMap element with no elements for a TermMap. This
 	 * assumes no classes and the default TermType, i.e. IRI.
 	 */
-	private void insertBasicSubjMap(Element tripmapStatementElem, String termMapTypeStr, String termMapVariableStr) {
+	private void createBasicSubjMap(Element tripmapStatementElem, String termMapTypeStr, String termMapVariableStr) {
 
 		/*
 		 * In reverse order, create the required elements, then append

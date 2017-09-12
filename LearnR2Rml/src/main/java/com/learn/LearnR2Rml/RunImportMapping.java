@@ -58,6 +58,7 @@ public class RunImportMapping {
 		mappingFile = "/home/lavinpe/workspace/r2rml-editor/samples/3_tms_class_iri_none.ttl";
 		mappingFile = "/home/lavinpe/workspace/r2rml-editor/samples/4_tms_class_iri_blank_none.ttl";
 		mappingFile = "/home/lavinpe/workspace/r2rml-editor/samples/various_testing.ttl";
+		mappingFile = "/home/lavinpe/workspace/LearnR2Rml/LearnR2Rml/samples/various_testing.ttl";
 		
 		//mappingFile = "/home/lavinpe/Downloads/r2rml-use-cases/mapping6.ttl";
 															

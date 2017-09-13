@@ -149,9 +149,6 @@ public class ProcessPartsOfSubjectMap {
 
 		}
 
-		System.out.println("C.G.T... " + comboValueBinStr + "\n");
-		PrettyPrintXML.printElement(cgtBlock);
-
 		System.out.println();
 
 		/*
@@ -264,7 +261,7 @@ public class ProcessPartsOfSubjectMap {
 				basicGraphBlock = createSubjGraphBlock(termMapTypeStr, prefixAndName);
 
 				/*
-				 * If this is the first/only graph, there will be no saved graph
+				 * If this is the first graph, there will be no saved graph
 				 */
 				if (savedGraphBlock != null) {
 					basicGraphBlock.appendChild(savedGraphBlock);
@@ -289,7 +286,7 @@ public class ProcessPartsOfSubjectMap {
 				basicGraphBlock = createSubjGraphBlock(termMapTypeStr, prefixAndName);
 
 				/*
-				 * If this is the first and only graph, then defend against
+				 * If this is the only graph, then defend against
 				 * savedGraphBlock being null (as initialised).
 				 */
 				if (savedGraphBlock != null) {
@@ -820,6 +817,7 @@ public class ProcessPartsOfSubjectMap {
 		 * Create the inner field elements
 		 */
 		Element fieldTermMap = xml.createElement(CONST.FIELD);
+		
 		fieldTermMap.setAttribute(CONST.NAME, CONST.TERMMAP_UC);
 		fieldTermMap.appendChild(xml.createTextNode(termMapTypeStr));
 
@@ -831,6 +829,7 @@ public class ProcessPartsOfSubjectMap {
 		 * Append these both to a <block type="subjectgraphtermap">
 		 */
 		Element subjGraphBlock = xml.createElement(CONST.BLOCK);
+		
 		subjGraphBlock.setAttribute(CONST.TYPE, CONST.SUBJECTGRAPHTERMAP);
 		subjGraphBlock.appendChild(fieldTermMap);
 		subjGraphBlock.appendChild(fieldTermMapValue);

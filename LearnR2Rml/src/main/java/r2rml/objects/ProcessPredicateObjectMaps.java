@@ -50,12 +50,17 @@ public class ProcessPredicateObjectMaps {
 			if(i < (pomList.size() - 1)){
 				/*
 				 * There is more than one PredicateObjectMap, and the current one is
-				 * the 1st or 2nd, etc of many, but not the last one. Therefore, <next>
-				 * blocks are required
+				 * any except not the last one. Therefore, <next> blocks are required.
 				 */
 				
 				
 				predObjBlock = createPomBlock();
+				
+				/*
+				 * Add parts for this pom here
+				 */
+				ProcessPartsOfPredObjMap ppom = new ProcessPartsOfPredObjMap(xml); 
+				ppom.processPartsPredObjMap(predObjBlock, pom);
 				
 				predObjBlock = putBlockInNext(predObjBlock);
 				
@@ -67,8 +72,22 @@ public class ProcessPredicateObjectMaps {
 				
 				
 			} else if(i == (pomList.size() - 1)){
+				/*
+				 * This is either the only POM, or 
+				 * the last of many, no <next> required
+				 */
 				
 				predObjBlock = createPomBlock();
+				
+				/*
+				 * Add parts for this pom here
+				 */
+				ProcessPartsOfPredObjMap ppom = new ProcessPartsOfPredObjMap(xml); 
+				ppom.processPartsPredObjMap(predObjBlock, pom);
+				
+				/*
+				 * Add all previously <next>'ed POMs
+				 */
 				
 				if(savedPredObjBlock != null){
 					
@@ -79,28 +98,7 @@ public class ProcessPredicateObjectMaps {
 				
 			}
 			
-			/*
-			 * Pass this POM <statement> and the pom to have its
-			 * parts processed 
-			 */
-			ProcessPartsOfPredObjMap ppom = new ProcessPartsOfPredObjMap(xml); 
-			ppom.processPartsPredObjMap(predObjBlock, pom);
-			
-			
-			/*
-			 * Process each of these for each POM, nesting each one
-			 * for the given permutations
-			 */
-			List<PredicateMap> pm = pom.getPredicateMaps();
-			
-			List<ObjectMap> om = pom.getObjectMaps();
-			
-			List<GraphMap> gm = pom.getGraphMaps();
-			
-			/*
-			 * If not last one, put it in a <next> and process the next one
-			 * then append the previous (saved) one
-			 */
+
 
 		}
 		
@@ -120,6 +118,8 @@ public class ProcessPredicateObjectMaps {
 			Element tripMapBlockElem = (Element) tripmapStatementElem.getFirstChild();
 			tripMapBlockElem.appendChild(predObjStatement);
 			
+		} else {
+			System.out.println("NO PREDICATE OBJECT MAP ELEMENT FOUND - THIS IS BAD!!!!!!!");
 		}
 		
 		

@@ -68,6 +68,18 @@ public final class CONST {
 
 	public static final String PREDICATEOBJECTMAP = "predicateobjectmap";
 
+	public static final String PREDICATEMAP = "predicatemap";
+
+	public static final String PPREDICATEOBJECTMAP = "ppredicateobjectmap";
+
+	public static final String PREDICATEGRAPHTERMAP = "predicategraphtermap";
+
+	public static final String GRAPHMAP = "graphmap";
+
+	public static final String OBJECTMAP = "objectmap";
+
+	public static final String OPREDICATEOBJECTMAP = "opredicateobjectmap";
+
 
 
 

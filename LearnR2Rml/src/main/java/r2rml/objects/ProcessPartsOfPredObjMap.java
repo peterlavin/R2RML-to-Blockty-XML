@@ -38,33 +38,15 @@ public class ProcessPartsOfPredObjMap {
 		Element predMapStatement = createPredicateMap(pom.getPredicateMaps());
 		predObjBlock.appendChild(predMapStatement);
 
-
-		
-		
-		
 		Element objectMapStatement = createObjMap(pom.getObjectMaps());
 		predObjBlock.appendChild(objectMapStatement);
-		
-		
 
-		if (pom.getGraphMaps().size() > 0) {
+		if (!pom.getGraphMaps().isEmpty()) {
 
 			Element graphMapsStatement = createGraphMap(pom.getGraphMaps());
 			predObjBlock.appendChild(graphMapsStatement);
 
 		} 
-
-		;
-		;
-		;
-		;
-		;
-		;
-		;
-		;
-		;
-		;
-		;
 
 	}
 
@@ -171,7 +153,6 @@ public class ProcessPartsOfPredObjMap {
 	 * @return
 	 */
 	private Element createObjMap(List<ObjectMap> objectMaps) {
-		// TODO Auto-generated method stub
 		
 		Element savedObjectMapBlock = null;
 		Element basicObjectMapBlock = null;
@@ -180,33 +161,32 @@ public class ProcessPartsOfPredObjMap {
 			
 			ObjectMap om = objectMaps.get(i);
 
-			String termMapTypeStr = "";
-			String prefixAndName = "";
+
+//						if(!om.getDatatypes().isEmpty()){
+//							// create termtype block as literal and datatype
+//							System.out.println("om.getDatatypes " + getResourcePrefix(om.getDatatypes().get(0).getObject().asResource()));
+//						} else {
+//							System.out.println("Nothing from om.getDatatypes" + " " +i);
+//						}
+//						
+//						if(!om.getLanguages().isEmpty()){
+//							// create termtype block as literal and language
+//							System.out.println("om.getLanguages " + om.getLanguages().get(0).getObject());
+//						} else {
+//							System.out.println("Nothing from om.getLanguages "  + " " +i + " size " + om.getLanguages().size());
+//						}
+			
+						
+						
+						
 
 			
-			/*
-			 * Prepare these variables for graph block creation
-			 */
-			if (om.isConstantValuedTermMap()) {
 
-				termMapTypeStr = CONST.CONSTANT_UC;
-				/*
-				 * Prefix:name set need for constant only
-				 */
-				prefixAndName = getResourcePrefix(om.getConstant().asResource());
 
-			} else if (om.isColumnValuedTermMap()) {
-				termMapTypeStr = CONST.COLUMN_UC;
-				prefixAndName = om.getColumn().toString();
-			} else {
-				termMapTypeStr = CONST.TEMPLATE_UC;
-				prefixAndName = om.getTemplate().toString();
-			}
-			
 			if (i < (objectMaps.size() - 1)) {
 				// More than one map, but this is not the last one
 				
-				basicObjectMapBlock = createBasicObjectBlock(termMapTypeStr, prefixAndName);
+				basicObjectMapBlock = createBasicObjectBlock(om);
 
 				/*
 				 * If this is the first graph, there will be no saved graph
@@ -229,9 +209,9 @@ public class ProcessPartsOfPredObjMap {
 			
 				
 			} else if (i == (objectMaps.size() - 1)){
-				// More than one map, but this is not the last one
+				// Only one map, or this is he last of many
 				
-				basicObjectMapBlock = createBasicObjectBlock(termMapTypeStr, prefixAndName);
+				basicObjectMapBlock = createBasicObjectBlock(om);
 
 				/*
 				 * If this is the only graph, then defend against
@@ -265,6 +245,7 @@ public class ProcessPartsOfPredObjMap {
 		objectMapStatement.setAttribute(CONST.NAME, CONST.OPREDICATEOBJECTMAP);
 		objectMapStatement.appendChild(basicObjectMapBlock);
 
+		System.out.println("objectMapStatement...");
 		PrettyPrintXML.printElement(objectMapStatement);
 		
 		return objectMapStatement;
@@ -284,7 +265,6 @@ public class ProcessPartsOfPredObjMap {
 	 * @return
 	 */
 	private Element createGraphMap(List<GraphMap> graphList) {
-		// TODO Auto-generated method stub
 		
 		System.out.println("gList size... " + graphList.size());
 
@@ -497,8 +477,32 @@ public class ProcessPartsOfPredObjMap {
 	 * @param prefixAndName
 	 * @return
 	 */
-	private Element createBasicObjectBlock(String termMapTypeStr, String prefixAndName) {
-		// TODO Auto-generated method stub
+	private Element createBasicObjectBlock(ObjectMap om) {
+
+
+		String termMapTypeStr = "";
+		String prefixAndName = "";
+		
+		/*
+		 * Prepare these variables for graph block creation
+		 */
+		if (om.isConstantValuedTermMap()) {
+
+			termMapTypeStr = CONST.CONSTANT_UC;
+			/*
+			 * Prefix:name set need for constant only
+			 */
+			prefixAndName = getResourcePrefix(om.getConstant().asResource());
+
+		} else if (om.isColumnValuedTermMap()) {
+			termMapTypeStr = CONST.COLUMN_UC;
+			prefixAndName = om.getColumn().toString();
+		} else if (om.isTemplateValuedTermMap()) {
+			termMapTypeStr = CONST.TEMPLATE_UC;
+			prefixAndName = om.getTemplate().toString();
+		}
+		
+		
 		
 		/*
 		 * Create the inner field elements
@@ -513,7 +517,118 @@ public class ProcessPartsOfPredObjMap {
 		fieldTermMapValue.appendChild(xml.createTextNode(prefixAndName));
 
 		/*
-		 * Append these both to a <block type="subjectgraphtermap">
+		 * Check for literal types, if just a literal, make...
+		 * 
+		 * 
+                        <statement name="termmap">
+                          <block type="objecttermtype">
+                            <field name="TERMTYPE">termtypeliteral</field>
+                          </block>
+                        </statement>
+		 * 
+		 * 
+		 * if a language *OR* datatype is set, make...
+		 * 
+		 *          <value name="termtypevalue">
+                      <block type="objectdatatype">
+                        <field name="DATATYPE">xsd:string</field>
+                      </block>
+                    </value>
+		 */
+		
+		if(om.isTermTypeLiteral()){
+			
+			Element fieldLitTermMap = xml.createElement(CONST.FIELD);
+			fieldLitTermMap.setAttribute(CONST.NAME, CONST.TERMTYPE_UC);
+			fieldLitTermMap.appendChild(xml.createTextNode(CONST.TERMTYPELITERAL));
+
+			Element objTermTypeBlock = xml.createElement(CONST.BLOCK);
+			objTermTypeBlock.setAttribute(CONST.TYPE, CONST.OBJECTTERMTYPE);
+			objTermTypeBlock.appendChild(fieldLitTermMap);
+			
+			System.out.println("Before dealing with lang/data");
+			PrettyPrintXML.printElement(objTermTypeBlock);
+			
+			/*
+			 * If there is a datatype or language set,
+			 * add a <value> element for this, append
+			 * to block also
+			 */
+			
+			if(!om.getLanguages().isEmpty()){
+				
+				
+				Element fieldLitLanguage = xml.createElement(CONST.FIELD);
+				fieldLitLanguage.setAttribute(CONST.NAME, CONST.LANGUAGE_UC);
+				
+				String languageValue = om.getLanguages().get(0).getObject().toString();
+				fieldLitLanguage.appendChild(xml.createTextNode(languageValue));
+				
+				Element objLanguageBlock = xml.createElement(CONST.BLOCK);
+				objLanguageBlock.setAttribute(CONST.TYPE, CONST.OBJECTLANGUAGE);
+				objLanguageBlock.appendChild(fieldLitLanguage);
+				
+				// Put this in a <value> element TODO, can be reused as a method
+				Element termTypeValue = xml.createElement(CONST.VALUE);
+				termTypeValue.setAttribute(CONST.TYPE, CONST.TERMTYPEVALUE);
+				termTypeValue.appendChild(objLanguageBlock);
+				
+				objTermTypeBlock.appendChild(termTypeValue);
+				// put in <statement name="termmap">
+				
+				Element termMapStatement = xml.createElement(CONST.STATEMENT);
+				termMapStatement.setAttribute(CONST.NAME, CONST.TERMMAP);
+				termMapStatement.appendChild(objTermTypeBlock);
+				
+				
+				
+				System.out.println("After dealing wt language");
+				PrettyPrintXML.printElement(termMapStatement);
+				
+			} else if (!om.getDatatypes().isEmpty()){
+				
+				Element fieldLitDatatype = xml.createElement(CONST.FIELD);
+				fieldLitDatatype.setAttribute(CONST.NAME, CONST.DATATYPE_UC);
+				
+				String datatypeValue = getResourcePrefix(om.getDatatypes().get(0).getObject().asResource());
+				fieldLitDatatype.appendChild(xml.createTextNode(datatypeValue));
+				
+				Element objLanguageBlock = xml.createElement(CONST.BLOCK);
+				objLanguageBlock.setAttribute(CONST.TYPE, CONST.OBJECTDATATYPE);
+				objLanguageBlock.appendChild(fieldLitDatatype);
+				
+				// Put this in a <value> element TODO, can be reused as a method
+				Element termTypeValue = xml.createElement(CONST.VALUE);
+				termTypeValue.setAttribute(CONST.TYPE, CONST.TERMTYPEVALUE);
+				termTypeValue.appendChild(objLanguageBlock);
+				
+				objTermTypeBlock.appendChild(termTypeValue);
+				// put in <statement name="termmap">
+				
+				Element termMapStatement = xml.createElement(CONST.STATEMENT);
+				termMapStatement.setAttribute(CONST.NAME, CONST.TERMMAP);
+				termMapStatement.appendChild(objTermTypeBlock);
+				
+				System.out.println("After dealing wt datatype");
+				PrettyPrintXML.printElement(termMapStatement);
+				
+			}
+			
+			// put in <statement name="termmap">
+			
+			
+			
+			
+		} else if (false){
+			
+			//TODO, deal with blank node
+			
+		}
+		
+
+		
+		/*
+		 * Append all this to a <block type="subjectgraphtermap">
 		 */
 		Element pomObjectMapBlock = xml.createElement(CONST.BLOCK);
 		

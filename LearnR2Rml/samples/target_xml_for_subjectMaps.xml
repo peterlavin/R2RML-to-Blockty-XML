@@ -438,3 +438,97 @@ seeing 2/more classes... 1
             </next>
           </block>
         </statement>
+
+
+
+
+<!-- Simple output -->
+
+
+            <statement name="opredicateobjectmap">
+              <block type="objectmap" id="A_,#Kg7-W,-E;)2a/FV{">
+                <field name="TERMMAP">COLUMN</field>
+                <field name="TERMMAPVALUE">first_name</field>
+                <statement name="termmap">
+                  <block type="objecttermtype" id="bC|KWJ4ba_b{UnowSemy">
+                    <field name="TERMTYPE">termtypeliteral</field>
+                    <value name="termtypevalue">
+                      <block type="objectdatatype" id="#H5nR%L[N;tcsCvxk%7e">
+                        <field name="DATATYPE">xsd:string</field>
+                      </block>
+                    </value>
+                  </block>
+                </statement>
+              </block>
+            </statement>
+            <next>
+              <block type="predicateobjectmap" id="{#h{E2Um)GN-+X/yqikc">
+                <statement name="ppredicateobjectmap">
+                  <block type="predicatemap" id="YNx#GrUUn)lv{C9KkT/n">
+                    <field name="TERMMAP">CONSTANT</field>
+                    <field name="TERMMAPVALUE">foaf:familyName</field>
+                  </block>
+                </statement>
+                <statement name="opredicateobjectmap">
+                  <block type="objectmap" id="J?y;?_%K?O2#xf:IC:0l">
+                    <field name="TERMMAP">COLUMN</field>
+                    <field name="TERMMAPVALUE">last_name</field>
+                    <statement name="termmap">
+                      <block type="objecttermtype" id="lv*(r4Vw!=YzjX7!MJl#">
+                        <field name="TERMTYPE">termtypeliteral</field>
+                        <value name="termtypevalue">
+                          <block type="objectlanguage" id="Yz6m`!O/c.36G#P5%Yoj">
+                            <field name="LANGUAGE">en</field>
+                          </block>
+                        </value>
+                      </block>
+                    </statement>
+                  </block>
+                </statement>
+                <next>
+                  <block type="predicateobjectmap" id="z.iZ:@L-SdPtJ-c*q_)J">
+                    <statement name="ppredicateobjectmap">
+                      <block type="predicatemap" id="P@wuWB6fqNMP^O?ock[N">
+                        <field name="TERMMAP">CONSTANT</field>
+                        <field name="TERMMAPVALUE">foaf:third_pom</field>
+                      </block>
+                    </statement>
+                    <statement name="opredicateobjectmap">
+                      <block type="objectmap" id="*Jg*m61{#Qk:/P~M~=Ln">
+                        <field name="TERMMAP">TEMPLATE</field>
+                        <field name="TERMMAPVALUE">third_name</field>
+                        <statement name="termmap">
+                          <block type="objecttermtype" id="C}@(9f]kp3o^4WQ^0*+j">
+                            <field name="TERMTYPE">termtypeliteral</field>
+                          </block>
+                        </statement>
+                      </block>
+                    </statement>
+                  </block>
+                </next>
+              </block>
+            </next>
+
+
+                    <statement name="termmap">
+                      <block type="objecttermtype">
+                        <field name="TERMTYPE">termtypeliteral</field>
+			<!-- blocks below go in here -->
+                      </block>
+                    </statement>
+
+
+
+
+                    <value name="termtypevalue">
+                      <block type="objectdatatype">
+                        <field name="DATATYPE">xsd:string</field>
+                      </block>
+                    </value>
+
+                    <value name="termtypevalue">
+                      <block type="objectlanguage">
+                        <field name="LANGUAGE">en</field>
+                      </block>
+                    </value>
+            

@@ -80,6 +80,22 @@ public final class CONST {
 
 	public static final String OPREDICATEOBJECTMAP = "opredicateobjectmap";
 
+	public static final String TERMTYPELITERAL = "termtypeliteral";
+
+	public static final String OBJECTTERMTYPE = "objecttermtype";
+
+	public static final String OBJECTLANGUAGE = "objectlanguage";
+
+	public static final String LANGUAGE_UC = "LANGUAGE";
+
+	public static final String VALUE = "value";
+
+	public static final String TERMTYPEVALUE = "termtypevalue";
+
+	public static final String DATATYPE_UC = "DATATYPE";
+
+	public static final String OBJECTDATATYPE = "objectdatatype";
+
 
 
 

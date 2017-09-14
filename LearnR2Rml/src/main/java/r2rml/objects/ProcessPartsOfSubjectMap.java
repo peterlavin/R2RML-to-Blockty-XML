@@ -94,8 +94,8 @@ public class ProcessPartsOfSubjectMap {
 
 		String comboValueBinStr = String.format("%3s", Integer.toBinaryString(comboValue)).replace(' ', '0');
 
-		System.out.println("Binary representation for Class-Graph-TT is (C.G.T)... " + comboValue + " or "
-				+ comboValueBinStr + "\n");
+//		System.out.println("Binary representation for Class-Graph-TT is (C.G.T)... " + comboValue + " or "
+//				+ comboValueBinStr + "\n");
 
 		/*
 		 * Now that the presence or absence of sub-parts of a Subject Map are

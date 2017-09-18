@@ -1,0 +1,78 @@
+
+    <statement name="triplesmap">
+      <block type="triplesmap">
+        <field name="TRIPLEMAPNAME">TripleMap1</field>
+        <statement name="logicaltable">
+          <block type="tablesqlquery">
+            <mutation sql="employees"/>
+            <field name="TABLESQLQUERY">table</field>
+          </block>
+        </statement>
+        <statement name="subjectmap">
+          <block type="subjectmap">
+
+	<!-- SUBJ MAP -->
+
+          </block>
+        </statement>
+
+        <statement name="predicateobjectmap">
+          <block type="predicateobjectmap">
+            <statement name="ppredicateobjectmap">
+        
+            </statement>
+            <next>
+              <block type="predicateobjectmap">
+                <statement name="ppredicateobjectmap">
+
+                </statement>
+
+              </block>
+              <next>
+                <block type="predicateobjectmap">
+                  <statement name="ppredicateobjectmap">
+                    <block type="predicatemap">
+                      <field name="TERMMAP">CONSTANT</field>
+                      <field name="TERMMAPVALUE">foaf:third_pom</field>
+                    </block>
+                  </statement>
+                  <statement name="opredicateobjectmap">
+                    <block type="objectmap">
+                      <field name="TERMMAP">TEMPLATE</field>
+                      <field name="TERMMAPVALUE">third_name</field>
+                    </block>
+                  </statement>
+                </block>
+              </next>
+            </next>
+          </block>
+        </statement>
+      </block>
+    </statement>
+  </block>
+</xml>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

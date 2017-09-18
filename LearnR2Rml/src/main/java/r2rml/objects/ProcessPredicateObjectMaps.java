@@ -40,6 +40,8 @@ public class ProcessPredicateObjectMaps {
 		 * one needs to be nested in <next> elements in the XML
 		 */
 		for(int i = 0; i < pomList.size(); i++){
+			
+			System.out.println("PROCESSING POM NUMBER " + (i+1));
 	
 			PredicateObjectMap pom = pomList.get(i);
 			
@@ -62,12 +64,13 @@ public class ProcessPredicateObjectMaps {
 				ProcessPartsOfPredObjMap ppom = new ProcessPartsOfPredObjMap(xml); 
 				ppom.processPartsPredObjMap(predObjBlock, pom);
 				
-				predObjBlock = putBlockInNext(predObjBlock);
 				
 				if(savedPredObjBlock != null){
 					predObjBlock.appendChild(savedPredObjBlock);
 				}
 				
+				predObjBlock = putBlockInNext(predObjBlock);
+
 				savedPredObjBlock = predObjBlock;
 				
 				

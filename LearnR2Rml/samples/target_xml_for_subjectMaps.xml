@@ -470,14 +470,14 @@ seeing 2/more classes... 1
                   </block>
                 </statement>
                 <statement name="opredicateobjectmap">
-                  <block type="objectmap" id="J?y;?_%K?O2#xf:IC:0l">
+                  <block type="objectmap">
                     <field name="TERMMAP">COLUMN</field>
                     <field name="TERMMAPVALUE">last_name</field>
-                    <statement name="termmap">
-                      <block type="objecttermtype" id="lv*(r4Vw!=YzjX7!MJl#">
+                    <statement name="termmap"> 			<!-- <<<<<<<<<<<<<< -->
+                      <block type="objecttermtype">
                         <field name="TERMTYPE">termtypeliteral</field>
                         <value name="termtypevalue">
-                          <block type="objectlanguage" id="Yz6m`!O/c.36G#P5%Yoj">
+                          <block type="objectlanguage">
                             <field name="LANGUAGE">en</field>
                           </block>
                         </value>
@@ -513,7 +513,6 @@ seeing 2/more classes... 1
                     <statement name="termmap">
                       <block type="objecttermtype">
                         <field name="TERMTYPE">termtypeliteral</field>
-			<!-- blocks below go in here -->
                       </block>
                     </statement>
 
@@ -531,4 +530,67 @@ seeing 2/more classes... 1
                         <field name="LANGUAGE">en</field>
                       </block>
                     </value>
+
+
+
+
+
+
+                    <statement name="termmap">
+                      <block type="objecttermtype">
+                        <field name="TERMTYPE">termtypeliteral</field>
+		<value name="termtypevalue">
+                          <block type="objectlanguage">
+                            <field name="LANGUAGE">en</field>
+                          </block>
+                        </value>
+                      </block>
+                    </statement>
+
+
+
+
+                    <value name="termtypevalue">
+                      <block type="objectdatatype">
+                        <field name="DATATYPE">xsd:string</field>
+                      </block>
+                    </value>
+
+
+
+
+
+                        <statement name="opredicateobjectmap">
+                          <block type="objectmap">
+                            <field name="TERMMAP">CONSTANT</field>
+                            <field name="TERMMAPVALUE">fourth_obj</field>
+                            <statement name="termmap">
+                              <block type="objecttermtype">
+                                <field name="TERMTYPE">termtypeblanknode</field>
+                              </block>
+                            </statement>
+                          </block>
+                        </statement>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
             

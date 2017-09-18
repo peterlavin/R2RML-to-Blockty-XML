@@ -96,6 +96,8 @@ public final class CONST {
 
 	public static final String OBJECTDATATYPE = "objectdatatype";
 
+	public static final String TERMTYPEBLANKNODE = "termtypeblanknode";
+
 
 
 

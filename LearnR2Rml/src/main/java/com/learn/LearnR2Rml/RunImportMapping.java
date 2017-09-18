@@ -145,8 +145,8 @@ public class RunImportMapping {
  * Un/comment for printing		
  */
 	
-//		System.out.println("\nFINAL DOCUMENT...\n");
-//		PrettyPrintXML.printDocument(xml);
+		System.out.println("\nFINAL DOCUMENT...\n");
+		PrettyPrintXML.printDocument(xml);
 
 	
 	

@@ -48,5 +48,28 @@
       ];
 
      ];
-   .
+    rr:predicateObjectMap [
+      rr:predicateMap [
+        rr:constant foaf:third_pom;
+        rr:termType rr:IRI;
+      ];
 
+       rr:objectMap [
+        rr:template "third_name";
+        rr:termType rr:Literal;
+      ];
+
+     ];
+    rr:predicateObjectMap [
+      rr:predicateMap [
+        rr:constant foaf:fourth_pom;
+        rr:termType rr:IRI;
+      ];
+
+       rr:objectMap [
+        rr:column "fourth_obj";
+        rr:termType rr:BlankNode;
+      ];
+
+     ];
+   .

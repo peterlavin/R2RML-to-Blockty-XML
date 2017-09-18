@@ -1,0 +1,46 @@
+
+    <statement name="triplesmap">
+      <block type="triplesmap">
+        <field name="TRIPLEMAPNAME">TripleMap1</field>
+        <statement name="logicaltable">
+          <block type="tablesqlquery">
+            <mutation sql="employees"/>
+            <field name="TABLESQLQUERY">table</field>
+          </block>
+        </statement>
+        <statement name="subjectmap">
+          <block type="subjectmap">
+
+		<!-- subj map-->
+
+          </block>
+        </statement>
+
+        <statement name="predicateobjectmap">
+          <block type="predicateobjectmap">
+            <statement name="ppredicateobjectmap">
+
+            </statement>
+            <next>
+              <block type="predicateobjectmap">
+                <statement name="ppredicateobjectmap">
+
+                </statement>
+
+                <next>
+                  <block type="predicateobjectmap">
+                    <statement name="ppredicateobjectmap">
+
+                    </statement>
+                  </block>
+                </next>
+              </block>
+            </next>
+          </block>
+        </statement> <!-- end of pom stm -->
+
+      </block>
+    </statement>
+  </block>
+</xml>
+

@@ -470,8 +470,8 @@ public class ProcessPartsOfPredObjMap {
 
 	
 	/**
-	 * Creates a basic block for an Object Map, as part of
-	 * a Predicate Object Map
+	 * Creates a basic block for an Object Map, which 
+	 * is a sub-part of a Predicate Object Map
 	 * 
 	 * @param termMapTypeStr
 	 * @param prefixAndName
@@ -490,7 +490,7 @@ public class ProcessPartsOfPredObjMap {
 
 			termMapTypeStr = CONST.CONSTANT_UC;
 			/*
-			 * Prefix:name set need for constant only
+			 * Prefix:name set needed for constant only
 			 */
 			prefixAndName = getResourcePrefix(om.getConstant().asResource());
 
@@ -520,23 +520,38 @@ public class ProcessPartsOfPredObjMap {
 		 * Check for literal types, if just a literal, make...
 		 * 
 		 * 
-                        <statement name="termmap">
-                          <block type="objecttermtype">
-                            <field name="TERMTYPE">termtypeliteral</field>
-                          </block>
-                        </statement>
+                    <statement name="termmap">
+                      <block type="objecttermtype">
+                        <field name="TERMTYPE">termtype??????</field>
+                      </block>
+                    </statement>
 		 * 
 		 * 
 		 * if a language *OR* datatype is set, make...
 		 * 
-		 *          <value name="termtypevalue">
-                      <block type="objectdatatype">
-                        <field name="DATATYPE">xsd:string</field>
+                    <statement name="termmap">
+                      <block type="objecttermtype">
+                        <field name="TERMTYPE">termtypeliteral</field>
+                        <value name="termtypevalue">
+                          <block type="objectdatatype">
+                            <field name="DATATYPE">xsd:string</field>
+                          </block>
+                        </value>
                       </block>
-                    </value>
+                    </statement>
 		 */
 		
+		Element termMapStatement = null;
+		
 		if(om.isTermTypeLiteral()){
+			
+			/*
+			 * Create this inner block, needed by every 'literal' termtype
+			 * 
+			   <block type="objecttermtype">
+                 <field name="TERMTYPE">termtypeliteral</field>
+               </block>
+			 */
 			
 			Element fieldLitTermMap = xml.createElement(CONST.FIELD);
 			fieldLitTermMap.setAttribute(CONST.NAME, CONST.TERMTYPE_UC);
@@ -570,20 +585,24 @@ public class ProcessPartsOfPredObjMap {
 				
 				// Put this in a <value> element TODO, can be reused as a method
 				Element termTypeValue = xml.createElement(CONST.VALUE);
-				termTypeValue.setAttribute(CONST.TYPE, CONST.TERMTYPEVALUE);
+				termTypeValue.setAttribute(CONST.NAME, CONST.TERMTYPEVALUE);
 				termTypeValue.appendChild(objLanguageBlock);
 				
 				objTermTypeBlock.appendChild(termTypeValue);
 				// put in <statement name="termmap">
 				
-				Element termMapStatement = xml.createElement(CONST.STATEMENT);
+				//Element 
+				termMapStatement = xml.createElement(CONST.STATEMENT);
 				termMapStatement.setAttribute(CONST.NAME, CONST.TERMMAP);
 				termMapStatement.appendChild(objTermTypeBlock);
 				
 				
+				// Append with other fields
+				termMapStatement.appendChild(objTermTypeBlock);
 				
 				System.out.println("After dealing wt language");
 				PrettyPrintXML.printElement(termMapStatement);
+				
 				
 			} else if (!om.getDatatypes().isEmpty()){
 				
@@ -599,29 +618,73 @@ public class ProcessPartsOfPredObjMap {
 				
 				// Put this in a <value> element TODO, can be reused as a method
 				Element termTypeValue = xml.createElement(CONST.VALUE);
-				termTypeValue.setAttribute(CONST.TYPE, CONST.TERMTYPEVALUE);
+				termTypeValue.setAttribute(CONST.NAME, CONST.TERMTYPEVALUE);
 				termTypeValue.appendChild(objLanguageBlock);
 				
 				objTermTypeBlock.appendChild(termTypeValue);
 				// put in <statement name="termmap">
 				
-				Element termMapStatement = xml.createElement(CONST.STATEMENT);
+				//Element 
+				termMapStatement = xml.createElement(CONST.STATEMENT);
 				termMapStatement.setAttribute(CONST.NAME, CONST.TERMMAP);
 				termMapStatement.appendChild(objTermTypeBlock);
 				
+				
+				// Append with other fields
+				termMapStatement.appendChild(objTermTypeBlock);
+
 				System.out.println("After dealing wt datatype");
 				PrettyPrintXML.printElement(termMapStatement);
 				
+			} else if (om.getDatatypes().isEmpty() && om.getLanguages().isEmpty()){
+				/*
+				 * Is a literal but *NO* DataType or Language is set
+				 */
+
+				// Just create a Statement element 
+				termMapStatement = xml.createElement(CONST.STATEMENT);
+				termMapStatement.setAttribute(CONST.NAME, CONST.TERMMAP);
+				termMapStatement.appendChild(objTermTypeBlock);
+				
+				// Append the basic termmap statement
+				termMapStatement.appendChild(objTermTypeBlock);
+				
 			}
-			
-			// put in <statement name="termmap">
-			
+
 			
 			
+		} else if (om.isTermTypeBlankNode()){
+			/*
+			 *  For blank nodes
+			 *  
+			 *  Create this only..
+			 *  
+			   <block type="objecttermtype">
+                 <field name="TERMTYPE">termtypeblanknode</field>
+               </block>
+			 */
 			
-		} else if (false){
+			Element fieldLitTermMap = xml.createElement(CONST.FIELD);
+			fieldLitTermMap.setAttribute(CONST.NAME, CONST.TERMTYPE_UC);
+			fieldLitTermMap.appendChild(xml.createTextNode(CONST.TERMTYPEBLANKNODE));
+
+			Element objTermTypeBlock = xml.createElement(CONST.BLOCK);
+			objTermTypeBlock.setAttribute(CONST.TYPE, CONST.OBJECTTERMTYPE);
+			objTermTypeBlock.appendChild(fieldLitTermMap);
 			
-			//TODO, deal with blank node
+			System.out.println("For termtypeblanknode");
+			PrettyPrintXML.printElement(objTermTypeBlock);
+			
+			// Just create a Statement element 
+			termMapStatement = xml.createElement(CONST.STATEMENT);
+			termMapStatement.setAttribute(CONST.NAME, CONST.TERMMAP);
+			termMapStatement.appendChild(objTermTypeBlock);
+			
+			// Append the basic termmap statement
+			termMapStatement.appendChild(objTermTypeBlock);
+			
+			
+			
 			
 		}
 		
@@ -635,6 +698,11 @@ public class ProcessPartsOfPredObjMap {
 		pomObjectMapBlock.setAttribute(CONST.TYPE, CONST.OBJECTMAP);
 		pomObjectMapBlock.appendChild(fieldTermMap);
 		pomObjectMapBlock.appendChild(fieldTermMapValue);
+		
+		// Only attempt to append if these has been created
+		if(termMapStatement != null){
+			pomObjectMapBlock.appendChild(termMapStatement);
+		}
 
 		return pomObjectMapBlock;
 

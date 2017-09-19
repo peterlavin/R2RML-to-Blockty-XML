@@ -1,116 +1,93 @@
 
-    <statement name="triplesmap">
-      <block type="triplesmap">
-        <field name="TRIPLEMAPNAME">TripleMap1</field>
-        <statement name="logicaltable">
-          <block type="tablesqlquery">
-            <mutation sql="employees"/>
-            <field name="TABLESQLQUERY">table</field>
-          </block>
-        </statement>
-        <statement name="subjectmap">
-          <block type="subjectmap">
-            <field name="TERMMAP">TEMPLATE</field>
-            <field name="TERMMAPVALUE">http://example/org/employee/{id}</field>
-            <statement name="termmap">
-              <block type="class">
-                <field name="CLASS">foaf:Person</field>
-                <next>
-                  <block type="class">
-                    <field name="CLASS">ex:Person</field>
-                  </block>
-                </next>
-              </block>
-            </statement>
-          </block>
-        </statement>
+
+<!-- For a single Join in a POM -->
+
         <statement name="predicateobjectmap">
           <block type="predicateobjectmap">
             <statement name="ppredicateobjectmap">
               <block type="predicatemap">
                 <field name="TERMMAP">CONSTANT</field>
-                <field name="TERMMAPVALUE">foaf:givenName</field>
-                <next>
-                  <block type="predicatemap">
-                    <field name="TERMMAP">CONSTANT</field>
-                    <field name="TERMMAPVALUE">foaf:familyName</field>
+                <field name="TERMMAPVALUE">foaf:based_near</field>
+              </block>
+            </statement>
+
+            <statement name="opredicateobjectmap">   <!-- Same to here -->
+              <block type="parenttriplesmap">
+                <field name="PARENTTRIPLEMAP">TripleMap2</field>
+                <statement name="joincondition">
+                  <block type="joincondition">
+                    <field name="CHILD">child_city</field>
+                    <field name="PARENT">parent_city</field>
                     <next>
-                      <block type="predicatemap">
-                        <field name="TERMMAP">CONSTANT</field>
-                        <field name="TERMMAPVALUE">foaf:middleName</field>
+                      <block type="joincondition">
+                        <field name="CHILD">child_id</field>
+                        <field name="PARENT">parent_id</field>
                       </block>
                     </next>
                   </block>
-                </next>
-              </block>
-            </statement>
-            <statement name="opredicateobjectmap">
-              <block type="objectmap">
-                <field name="TERMMAP">COLUMN</field>
-                <field name="TERMMAPVALUE">first_name</field>
-                <statement name="termmap">
-                  <block type="objecttermtype">
-                    <field name="TERMTYPE">termtypeliteral</field>
-                    <value name="termtypevalue">
-                      <block type="objectdatatype">
-                        <field name="DATATYPE">xsd:string</field>
-                      </block>
-                    </value>
-                  </block>
                 </statement>
               </block>
             </statement>
-            <next>
-              <block type="predicateobjectmap">
-                <statement name="ppredicateobjectmap">
-                  <block type="predicatemap">
-                    <field name="TERMMAP">CONSTANT</field>
-                    <field name="TERMMAPVALUE">foaf:familyName</field>
-                  </block>
-                </statement>
-                <statement name="opredicateobjectmap">
-                  <block type="objectmap">
-                    <field name="TERMMAP">COLUMN</field>
-                    <field name="TERMMAPVALUE">last_name</field>
-                    <statement name="termmap">
-                      <block type="objecttermtype">
-                        <field name="TERMTYPE">termtypeliteral</field>
-                        <value name="termtypevalue">
-                          <block type="objectlanguage">
-                            <field name="LANGUAGE">en</field>
-                          </block>
-                        </value>
+
+
+            <statement name="graphmap">
+              <block type="predicategraphtermap">
+                <field name="TERMMAP">CONSTANT</field>
+                <field name="TERMMAPVALUE">ex:graph_1</field>
+              </block>
+            </statement>
+          </block>
+        </statement>
+
+
+
+<!-- 2 Joins in one POM -->
+
+
+        <statement name="predicateobjectmap">
+          <block type="predicateobjectmap">
+            <statement name="ppredicateobjectmap">
+              <block type="predicatemap">
+                <field name="TERMMAP">CONSTANT</field>
+                <field name="TERMMAPVALUE">foaf:based_near</field>
+              </block>
+            </statement>
+
+            <statement name="opredicateobjectmap">     <!-- Same to here -->
+              <block type="parenttriplesmap">
+                <field name="PARENTTRIPLEMAP">TripleMap2</field>
+                <statement name="joincondition">
+                  <block type="joincondition">
+                    <field name="CHILD">child_city</field>
+                    <field name="PARENT">parent_city</field>
+                    <next>
+                      <block type="joincondition">
+                        <field name="CHILD">child_id</field>
+                        <field name="PARENT">parent_id</field>
                       </block>
-                    </statement>
+                    </next>
                   </block>
                 </statement>
                 <next>
-                  <block type="predicateobjectmap">
-                    <statement name="ppredicateobjectmap">
-                      <block type="predicatemap"> 
-                        <field name="TERMMAP">CONSTANT</field>
-                        <field name="TERMMAPVALUE">foaf:third_pom</field>
-                      </block>
-                    </statement>
-                    <statement name="opredicateobjectmap">
-                      <block type="objectmap"> 			<!-- this is returned-->
-                        <field name="TERMMAP">TEMPLATE</field>
-                        <field name="TERMMAPVALUE">third_name</field>
-                        <statement name="termmap">
-                          <block type="objecttermtype">
-                            <field name="TERMTYPE">termtypeliteral</field>
-                          </block>
-                        </statement>
+                  <block type="parenttriplesmap">
+                    <field name="PARENTTRIPLEMAP">TripleMap2</field>
+                    <statement name="joincondition">
+                      <block type="joincondition">
+                        <field name="CHILD">join_2</field>
+                        <field name="PARENT">join_2</field>
                       </block>
                     </statement>
                   </block>
                 </next>
               </block>
-            </next>
+            </statement>
+
+
+            <statement name="graphmap">
+              <block type="predicategraphtermap">
+                <field name="TERMMAP">CONSTANT</field>
+                <field name="TERMMAPVALUE">ex:graph_1</field>
+              </block>
+            </statement>
           </block>
         </statement>
-      </block>
-    </statement>
-  </block>
-</xml>
-

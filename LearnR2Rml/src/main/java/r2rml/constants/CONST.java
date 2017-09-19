@@ -98,6 +98,17 @@ public final class CONST {
 
 	public static final String TERMTYPEBLANKNODE = "termtypeblanknode";
 
+	public static final String TERMTYPEIRI = "termtypeiri";
+
+	public static final String JOINCONDITION = "joincondition";
+
+	public static final String CHILD_UC = "CHILD";
+
+	public static final String PARENT_UC = "PARENT";
+
+	public static final String PARENTTRIPLEMAP_UC = "PARENTTRIPLEMAP";
+
+	public static final String PARENTTRIPLESMAP = "parenttriplesmap";
 
 
 

@@ -10,9 +10,11 @@ import org.w3c.dom.Element;
 
 import r2rml.constants.CONST;
 import r2rml.model.GraphMap;
+import r2rml.model.Join;
 import r2rml.model.ObjectMap;
 import r2rml.model.PredicateMap;
 import r2rml.model.PredicateObjectMap;
+import r2rml.model.RefObjectMap;
 import xmlutilities.PrettyPrintXML;
 
 public class ProcessPartsOfPredObjMap {
@@ -28,8 +30,6 @@ public class ProcessPartsOfPredObjMap {
 
 	public void processPartsPredObjMap(Element predObjBlock, PredicateObjectMap pom) {
 
-		Element pogBlock = null;
-
 		/*
 		 * A PredicateObjectMap must contain at least one Predicate Map and at
 		 * least one Object Map. Graphs are not always present.
@@ -38,25 +38,47 @@ public class ProcessPartsOfPredObjMap {
 		Element predMapStatement = createPredicateMap(pom.getPredicateMaps());
 		predObjBlock.appendChild(predMapStatement);
 
-		Element objectMapStatement = createObjMap(pom.getObjectMaps());
-		predObjBlock.appendChild(objectMapStatement);
 
+		/*
+		 * A PredicateObjectMap must have at least one predicate map.
+		 * It must also have at least one object map,
+		 * or one join condition.
+		 * 
+		 * Although there can be a mix of Joins and Object Maps,
+		 * only one is processed TODO, fix this
+		 */
+		if(!pom.getObjectMaps().isEmpty()){
+			
+			Element objectMapStatement = createObjMap(pom.getObjectMaps());
+			predObjBlock.appendChild(objectMapStatement);
+		
+		} else if (!pom.getRefObjectMaps().isEmpty()){
+			
+			System.out.println("\n!!!!! Found Joins !!!!\n");
+			
+			
+			Element joinMapStatement = createJoinMap(pom.getRefObjectMaps());
+			predObjBlock.appendChild(joinMapStatement);
+			
+		}
+
+		
 		if (!pom.getGraphMaps().isEmpty()) {
 
 			Element graphMapsStatement = createGraphMap(pom.getGraphMaps());
 			predObjBlock.appendChild(graphMapsStatement);
 
-		} 
+		}
 
 	}
 
 	/*
 	 * HELPER METHODS TO CREATE THE ELEMENTS
 	 */
-	
+
 	/**
-	 * Creates a Predicate Map element which can contain
-	 * one or more (nested) Predicate Map elements
+	 * Creates a Predicate Map element which can contain one or more (nested)
+	 * Predicate Map elements
 	 * 
 	 * @param predMapsList
 	 * @return
@@ -104,7 +126,7 @@ public class ProcessPartsOfPredObjMap {
 				/*
 				 * This is not the last graph, so use a <next> block
 				 */
-				basicPredMapBlock = putBlockInNext(basicPredMapBlock);
+				basicPredMapBlock = putInNextElement(basicPredMapBlock);
 
 				/*
 				 * Save this for the next iteration
@@ -146,46 +168,23 @@ public class ProcessPartsOfPredObjMap {
 	}
 
 	/**
-	 * Creates an Object Map element with one or more (nested)
-	 * Object Maps.
+	 * Creates an Object Map element with one or more (nested) Object Maps.
 	 * 
 	 * @param objectMaps
 	 * @return
 	 */
 	private Element createObjMap(List<ObjectMap> objectMaps) {
-		
+
 		Element savedObjectMapBlock = null;
 		Element basicObjectMapBlock = null;
 
-		for(int i = 0; i < objectMaps.size(); i++){
-			
+		for (int i = 0; i < objectMaps.size(); i++) {
+
 			ObjectMap om = objectMaps.get(i);
-
-
-//						if(!om.getDatatypes().isEmpty()){
-//							// create termtype block as literal and datatype
-//							System.out.println("om.getDatatypes " + getResourcePrefix(om.getDatatypes().get(0).getObject().asResource()));
-//						} else {
-//							System.out.println("Nothing from om.getDatatypes" + " " +i);
-//						}
-//						
-//						if(!om.getLanguages().isEmpty()){
-//							// create termtype block as literal and language
-//							System.out.println("om.getLanguages " + om.getLanguages().get(0).getObject());
-//						} else {
-//							System.out.println("Nothing from om.getLanguages "  + " " +i + " size " + om.getLanguages().size());
-//						}
-			
-						
-						
-						
-
-			
-
 
 			if (i < (objectMaps.size() - 1)) {
 				// More than one map, but this is not the last one
-				
+
 				basicObjectMapBlock = createBasicObjectBlock(om);
 
 				/*
@@ -198,19 +197,16 @@ public class ProcessPartsOfPredObjMap {
 				/*
 				 * This is not the last graph, so use a <next> block
 				 */
-				basicObjectMapBlock = putBlockInNext(basicObjectMapBlock);
+				basicObjectMapBlock = putInNextElement(basicObjectMapBlock);
 
 				/*
 				 * Save this for the next iteration
 				 */
 				savedObjectMapBlock = basicObjectMapBlock;
-				
-				
-			
-				
-			} else if (i == (objectMaps.size() - 1)){
+
+			} else if (i == (objectMaps.size() - 1)) {
 				// Only one map, or this is he last of many
-				
+
 				basicObjectMapBlock = createBasicObjectBlock(om);
 
 				/*
@@ -226,47 +222,131 @@ public class ProcessPartsOfPredObjMap {
 					basicObjectMapBlock.appendChild(savedObjectMapBlock);
 
 				}
-				
-				
-				
+
 			}
-			
-		
-			
+
 		}
-		
-		
-		
-		
+
 		/*
 		 * This needs to be in a <statement> element
 		 */
 		Element objectMapStatement = xml.createElement(CONST.STATEMENT);
 		objectMapStatement.setAttribute(CONST.NAME, CONST.OPREDICATEOBJECTMAP);
-		objectMapStatement.appendChild(basicObjectMapBlock);
 
-		System.out.println("objectMapStatement...");
-		PrettyPrintXML.printElement(objectMapStatement);
-		
+		if (basicObjectMapBlock != null) {
+			objectMapStatement.appendChild(basicObjectMapBlock);
+		}
+
 		return objectMapStatement;
-		
-		
 
 	}
 
-	
+	/**
+	 * Creates a map of a join.
+	 * 
+	 * @param refObjectMaps
+	 * @return
+	 */
+	private Element createJoinMap(List<RefObjectMap> refObjectList) {
+		// TODO joinMap
+		
+		Element savedRefObjBlock = null;
+		Element basicRefObjBlock = null;
 
+		for (int i = 0; i < refObjectList.size(); i++) {
+
+			/*
+			 * 
+			 */
+			if (i < (refObjectList.size() - 1)) {
+				/*
+				 * There is more than one graph, and the current graph is a 1st,
+				 * 2nd, etc of many, but not the last one. Therefore, <next>
+				 * blocks are required
+				 */
+
+				basicRefObjBlock = createBasicRefObjBlock(refObjectList.get(i));
+
+				/*
+				 * If this is the first graph, there will be no saved graph
+				 */
+				if (savedRefObjBlock != null) {
+					basicRefObjBlock.appendChild(savedRefObjBlock);
+				}
+
+				/*
+				 * This is not the last graph, so use a <next> block
+				 */
+				basicRefObjBlock = putInNextElement(basicRefObjBlock);
+
+				/*
+				 * Save this for the next iteration
+				 */
+				savedRefObjBlock = basicRefObjBlock;
+
+			} else if (i == (refObjectList.size() - 1)) {
+				/*
+				 * There is only one graph or the current graph is the last one.
+				 * It should be returned but not surrounded by a <next>
+				 */
+
+				basicRefObjBlock = createBasicRefObjBlock(refObjectList.get(i));
+
+				/*
+				 * If this is the only graph, then defend against
+				 * savedGraphBlock being null (as initialised).
+				 */
+				if (savedRefObjBlock != null) {
+
+					/*
+					 * Recall, any savedGraphBlock will already be surrounded by
+					 * a <next> block
+					 */
+					basicRefObjBlock.appendChild(savedRefObjBlock);
+
+				}
+				// System.out.println("subjGraphBlock for LAST GRAPH...\n");
+				// PrettyPrintXML.printElement(basicGraphBlock);
+
+			}
+
+		}
+
+		/*
+		 * This needs to be in a <statement> element
+		 */
+		Element RefObjStatement = xml.createElement(CONST.STATEMENT);
+		RefObjStatement.setAttribute(CONST.NAME, CONST.OPREDICATEOBJECTMAP);
+		RefObjStatement.appendChild(basicRefObjBlock);
+
+		return RefObjStatement;
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		/////////////////////////////////////////////////////
+	}
 
 	/**
-	 * Creates a Graph Map element for one or
-	 * more (nested) Graph Maps.
+	 * Creates a Graph Map element for one or more (nested) Graph Maps.
 	 * 
 	 * @param graphMaps
 	 * @return
 	 */
 	private Element createGraphMap(List<GraphMap> graphList) {
-		
-		System.out.println("gList size... " + graphList.size());
 
 		Element savedGraphBlock = null;
 		Element basicGraphBlock = null;
@@ -319,7 +399,7 @@ public class ProcessPartsOfPredObjMap {
 				/*
 				 * This is not the last graph, so use a <next> block
 				 */
-				basicGraphBlock = putBlockInNext(basicGraphBlock);
+				basicGraphBlock = putInNextElement(basicGraphBlock);
 
 				/*
 				 * Save this for the next iteration
@@ -354,7 +434,6 @@ public class ProcessPartsOfPredObjMap {
 
 		}
 
-		
 		/*
 		 * This needs to be in a <statement> element
 		 */
@@ -398,7 +477,7 @@ public class ProcessPartsOfPredObjMap {
 	/*
 	 * Takes any block element and puts it in a <next></next> element
 	 */
-	private Element putBlockInNext(Element blockElm) {
+	private Element putInNextElement(Element blockElm) {
 
 		Element nextElement = xml.createElement(CONST.NEXT);
 
@@ -436,11 +515,9 @@ public class ProcessPartsOfPredObjMap {
 
 		return pmGraphBlock;
 	}
-	
-	
+
 	/**
-	 * Creates a basic block for a Graph Map, as part
-	 * of a Predicate Object Map
+	 * Creates a basic block for a Graph Map, as part of a Predicate Object Map
 	 */
 	private Element createPomGraphBlock(String termMapTypeStr, String prefixAndName) {
 
@@ -448,7 +525,7 @@ public class ProcessPartsOfPredObjMap {
 		 * Create the inner field elements
 		 */
 		Element fieldTermMap = xml.createElement(CONST.FIELD);
-		
+
 		fieldTermMap.setAttribute(CONST.NAME, CONST.TERMMAP_UC);
 		fieldTermMap.appendChild(xml.createTextNode(termMapTypeStr));
 
@@ -460,7 +537,7 @@ public class ProcessPartsOfPredObjMap {
 		 * Append these both to a <block type="subjectgraphtermap">
 		 */
 		Element pomGraphBlock = xml.createElement(CONST.BLOCK);
-		
+
 		pomGraphBlock.setAttribute(CONST.TYPE, CONST.PREDICATEGRAPHTERMAP);
 		pomGraphBlock.appendChild(fieldTermMap);
 		pomGraphBlock.appendChild(fieldTermMapValue);
@@ -468,10 +545,9 @@ public class ProcessPartsOfPredObjMap {
 		return pomGraphBlock;
 	}
 
-	
 	/**
-	 * Creates a basic block for an Object Map, which 
-	 * is a sub-part of a Predicate Object Map
+	 * Creates a basic block for an Object Map, which is a sub-part of a
+	 * Predicate Object Map
 	 * 
 	 * @param termMapTypeStr
 	 * @param prefixAndName
@@ -479,10 +555,9 @@ public class ProcessPartsOfPredObjMap {
 	 */
 	private Element createBasicObjectBlock(ObjectMap om) {
 
-
 		String termMapTypeStr = "";
 		String prefixAndName = "";
-		
+
 		/*
 		 * Prepare these variables for graph block creation
 		 */
@@ -501,14 +576,12 @@ public class ProcessPartsOfPredObjMap {
 			termMapTypeStr = CONST.TEMPLATE_UC;
 			prefixAndName = om.getTemplate().toString();
 		}
-		
-		
-		
+
 		/*
 		 * Create the inner field elements
 		 */
 		Element fieldTermMap = xml.createElement(CONST.FIELD);
-		
+
 		fieldTermMap.setAttribute(CONST.NAME, CONST.TERMMAP_UC);
 		fieldTermMap.appendChild(xml.createTextNode(termMapTypeStr));
 
@@ -520,39 +593,29 @@ public class ProcessPartsOfPredObjMap {
 		 * Check for literal types, if just a literal, make...
 		 * 
 		 * 
-                    <statement name="termmap">
-                      <block type="objecttermtype">
-                        <field name="TERMTYPE">termtype??????</field>
-                      </block>
-                    </statement>
+		 * <statement name="termmap"> <block type="objecttermtype"> <field
+		 * name="TERMTYPE">termtype??????</field> </block> </statement>
 		 * 
 		 * 
-		 * if a language *OR* datatype is set, make...
+		 * if a leteral and has language *OR* datatype is set, make...
 		 * 
-                    <statement name="termmap">
-                      <block type="objecttermtype">
-                        <field name="TERMTYPE">termtypeliteral</field>
-                        <value name="termtypevalue">
-                          <block type="objectdatatype">
-                            <field name="DATATYPE">xsd:string</field>
-                          </block>
-                        </value>
-                      </block>
-                    </statement>
+		 * <statement name="termmap"> <block type="objecttermtype"> <field
+		 * name="TERMTYPE">termtypeliteral</field> <value name="termtypevalue">
+		 * <block type="objectdatatype"> <field name="DATATYPE">????????</field>
+		 * </block> </value> </block> </statement>
 		 */
-		
+
 		Element termMapStatement = null;
-		
-		if(om.isTermTypeLiteral()){
-			
+
+		if (om.isTermTypeLiteral()) {
+
 			/*
 			 * Create this inner block, needed by every 'literal' termtype
 			 * 
-			   <block type="objecttermtype">
-                 <field name="TERMTYPE">termtypeliteral</field>
-               </block>
+			 * <block type="objecttermtype"> <field
+			 * name="TERMTYPE">termtypeliteral</field> </block>
 			 */
-			
+
 			Element fieldLitTermMap = xml.createElement(CONST.FIELD);
 			fieldLitTermMap.setAttribute(CONST.NAME, CONST.TERMTYPE_UC);
 			fieldLitTermMap.appendChild(xml.createTextNode(CONST.TERMTYPELITERAL));
@@ -560,147 +623,131 @@ public class ProcessPartsOfPredObjMap {
 			Element objTermTypeBlock = xml.createElement(CONST.BLOCK);
 			objTermTypeBlock.setAttribute(CONST.TYPE, CONST.OBJECTTERMTYPE);
 			objTermTypeBlock.appendChild(fieldLitTermMap);
-			
-			System.out.println("Before dealing with lang/data");
-			PrettyPrintXML.printElement(objTermTypeBlock);
-			
+
 			/*
-			 * If there is a datatype or language set,
-			 * add a <value> element for this, append
-			 * to block also
+			 * If there is a datatype or language set, add a <value> element for
+			 * this, append to block also
 			 */
-			
-			if(!om.getLanguages().isEmpty()){
-				
-				
-				Element fieldLitLanguage = xml.createElement(CONST.FIELD);
-				fieldLitLanguage.setAttribute(CONST.NAME, CONST.LANGUAGE_UC);
-				
+
+			if (!om.getLanguages().isEmpty()) {
+
 				String languageValue = om.getLanguages().get(0).getObject().toString();
-				fieldLitLanguage.appendChild(xml.createTextNode(languageValue));
-				
-				Element objLanguageBlock = xml.createElement(CONST.BLOCK);
-				objLanguageBlock.setAttribute(CONST.TYPE, CONST.OBJECTLANGUAGE);
-				objLanguageBlock.appendChild(fieldLitLanguage);
-				
-				// Put this in a <value> element TODO, can be reused as a method
-				Element termTypeValue = xml.createElement(CONST.VALUE);
-				termTypeValue.setAttribute(CONST.NAME, CONST.TERMTYPEVALUE);
-				termTypeValue.appendChild(objLanguageBlock);
-				
+
+				Element fieldLitLanguage = createFieldElement(CONST.LANGUAGE_UC, languageValue);
+
+				Element objLanguageBlock = createBlockElement(CONST.OBJECTLANGUAGE, fieldLitLanguage);
+
+				Element termTypeValue = putInValueElement(objLanguageBlock);
+
 				objTermTypeBlock.appendChild(termTypeValue);
-				// put in <statement name="termmap">
-				
-				//Element 
-				termMapStatement = xml.createElement(CONST.STATEMENT);
-				termMapStatement.setAttribute(CONST.NAME, CONST.TERMMAP);
-				termMapStatement.appendChild(objTermTypeBlock);
-				
-				
+
+				/*
+				 * Put in <statement name="termmap">
+				 */
+
+				// Create an Statement element for all this
+				termMapStatement = createStatementElement(CONST.TERMMAP, objTermTypeBlock);
+
 				// Append with other fields
 				termMapStatement.appendChild(objTermTypeBlock);
-				
+
 				System.out.println("After dealing wt language");
 				PrettyPrintXML.printElement(termMapStatement);
-				
-				
-			} else if (!om.getDatatypes().isEmpty()){
-				
-				Element fieldLitDatatype = xml.createElement(CONST.FIELD);
-				fieldLitDatatype.setAttribute(CONST.NAME, CONST.DATATYPE_UC);
-				
+
+			} else if (!om.getDatatypes().isEmpty()) {
+
 				String datatypeValue = getResourcePrefix(om.getDatatypes().get(0).getObject().asResource());
-				fieldLitDatatype.appendChild(xml.createTextNode(datatypeValue));
-				
-				Element objLanguageBlock = xml.createElement(CONST.BLOCK);
-				objLanguageBlock.setAttribute(CONST.TYPE, CONST.OBJECTDATATYPE);
-				objLanguageBlock.appendChild(fieldLitDatatype);
-				
-				// Put this in a <value> element TODO, can be reused as a method
-				Element termTypeValue = xml.createElement(CONST.VALUE);
-				termTypeValue.setAttribute(CONST.NAME, CONST.TERMTYPEVALUE);
-				termTypeValue.appendChild(objLanguageBlock);
-				
+
+				Element fieldLitDatatype = createFieldElement(CONST.DATATYPE_UC, datatypeValue);
+
+				Element objDataTypeBlock = createBlockElement(CONST.OBJECTDATATYPE, fieldLitDatatype);
+
+				Element termTypeValue = putInValueElement(objDataTypeBlock);
+
 				objTermTypeBlock.appendChild(termTypeValue);
-				// put in <statement name="termmap">
-				
-				//Element 
-				termMapStatement = xml.createElement(CONST.STATEMENT);
-				termMapStatement.setAttribute(CONST.NAME, CONST.TERMMAP);
-				termMapStatement.appendChild(objTermTypeBlock);
-				
-				
+
+				// Create an Statement element for all this
+				termMapStatement = createStatementElement(CONST.TERMMAP, objTermTypeBlock);
+
 				// Append with other fields
 				termMapStatement.appendChild(objTermTypeBlock);
 
 				System.out.println("After dealing wt datatype");
 				PrettyPrintXML.printElement(termMapStatement);
-				
-			} else if (om.getDatatypes().isEmpty() && om.getLanguages().isEmpty()){
+
+			} else if (om.getDatatypes().isEmpty() && om.getLanguages().isEmpty()) {
 				/*
 				 * Is a literal but *NO* DataType or Language is set
 				 */
 
-				// Just create a Statement element 
-				termMapStatement = xml.createElement(CONST.STATEMENT);
-				termMapStatement.setAttribute(CONST.NAME, CONST.TERMMAP);
-				termMapStatement.appendChild(objTermTypeBlock);
-				
+				// Just create a Statement element
+				termMapStatement = createStatementElement(CONST.TERMMAP, objTermTypeBlock);
+
 				// Append the basic termmap statement
 				termMapStatement.appendChild(objTermTypeBlock);
-				
+
 			}
 
-			
-			
-		} else if (om.isTermTypeBlankNode()){
+		} else if (om.isTermTypeBlankNode()) {
 			/*
-			 *  For blank nodes
-			 *  
-			 *  Create this only..
-			 *  
-			   <block type="objecttermtype">
-                 <field name="TERMTYPE">termtypeblanknode</field>
-               </block>
+			 * For blank nodes
+			 * 
+			 * Create this only..
+			 * 
+			 * <block type="objecttermtype"> <field
+			 * name="TERMTYPE">termtypeblanknode</field> </block>
 			 */
-			
-			Element fieldLitTermMap = xml.createElement(CONST.FIELD);
-			fieldLitTermMap.setAttribute(CONST.NAME, CONST.TERMTYPE_UC);
-			fieldLitTermMap.appendChild(xml.createTextNode(CONST.TERMTYPEBLANKNODE));
+
+			Element fieldBntTermMap = createFieldElement(CONST.TERMTYPE_UC, CONST.TERMTYPEBLANKNODE);
+
+			Element objTermTypeBlock = createBlockElement(CONST.OBJECTTERMTYPE, fieldBntTermMap);
+
+			System.out.println("For termtypeblanknode");
+			PrettyPrintXML.printElement(objTermTypeBlock);
+
+			termMapStatement = createStatementElement(CONST.TERMMAP, objTermTypeBlock);
+
+			// Append the basic termmap statement
+			termMapStatement.appendChild(objTermTypeBlock);
+
+		} else if (om.isTermTypeIRI()) {
+			/*
+			 * IRI is declared or inferred
+			 */
+
+			// TODO RF x3
+			Element fieldIriTermMap = xml.createElement(CONST.FIELD);
+			fieldIriTermMap.setAttribute(CONST.NAME, CONST.TERMTYPE_UC);
+			fieldIriTermMap.appendChild(xml.createTextNode(CONST.TERMTYPEIRI));
 
 			Element objTermTypeBlock = xml.createElement(CONST.BLOCK);
 			objTermTypeBlock.setAttribute(CONST.TYPE, CONST.OBJECTTERMTYPE);
-			objTermTypeBlock.appendChild(fieldLitTermMap);
-			
-			System.out.println("For termtypeblanknode");
+			objTermTypeBlock.appendChild(fieldIriTermMap);
+
+			System.out.println("For termtypeiri");
 			PrettyPrintXML.printElement(objTermTypeBlock);
-			
-			// Just create a Statement element 
+
+			// Just create a Statement element
 			termMapStatement = xml.createElement(CONST.STATEMENT);
 			termMapStatement.setAttribute(CONST.NAME, CONST.TERMMAP);
 			termMapStatement.appendChild(objTermTypeBlock);
-			
+
 			// Append the basic termmap statement
 			termMapStatement.appendChild(objTermTypeBlock);
-			
-			
-			
-			
-		}
-		
 
-		
+		}
+
 		/*
 		 * Append all this to a <block type="subjectgraphtermap">
 		 */
 		Element pomObjectMapBlock = xml.createElement(CONST.BLOCK);
-		
+
 		pomObjectMapBlock.setAttribute(CONST.TYPE, CONST.OBJECTMAP);
 		pomObjectMapBlock.appendChild(fieldTermMap);
 		pomObjectMapBlock.appendChild(fieldTermMapValue);
-		
+
 		// Only attempt to append if these has been created
-		if(termMapStatement != null){
+		if (termMapStatement != null) {
 			pomObjectMapBlock.appendChild(termMapStatement);
 		}
 
@@ -708,4 +755,199 @@ public class ProcessPartsOfPredObjMap {
 
 	}
 	
+	
+	
+	private Element createBasicRefObjBlock(RefObjectMap rom) {
+		// TODO Auto-generated method stub
+		
+		/*
+		 * Create a basic Reference Object Block to go into a
+		 * <statement name="opredicateobjectmap">, the same
+		 * place as an ObjectMap goes.
+		 */
+		
+		String parentTripMap = rom.getParentTriplesMap().getLocalName();
+		
+		Element fieldParentTripMap = createFieldElement(CONST.PARENTTRIPLEMAP_UC ,parentTripMap);
+		
+		Element blockParentTripMap = createBlockElement(CONST.PARENTTRIPLESMAP , fieldParentTripMap);
+
+		/*
+		 * TODO, unsure if Join list can be empty,
+		 * in if-stm for fail safety
+		 */
+		if(!rom.getJoins().isEmpty()){
+			
+			List<Join> joinList = rom.getJoins();
+			Element joinStatementElement = createJoinCondStatement(joinList);
+			blockParentTripMap.appendChild(joinStatementElement);
+			
+		}
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		//  put this in a <statement name="opredicateobjectmap">
+		// TODO, deal with a mix of joins and obj maps, i.e. do
+		// not make two of <statement name="opredicateobjectmap">
+		
+		
+		
+		return blockParentTripMap;
+	}
+
+	
+	
+	
+	
+
+	/*
+	 * Helper reusable methods to create field, block and statement element.
+	 */
+	private Element createFieldElement(String nameValue, String contentValue) {
+
+		Element fieldLitLanguage = xml.createElement(CONST.FIELD);
+		fieldLitLanguage.setAttribute(CONST.NAME, nameValue);
+		fieldLitLanguage.appendChild(xml.createTextNode(contentValue));
+
+		return fieldLitLanguage;
+	}
+
+	private Element createBlockElement(String typeValue, Element fieldElem) {
+
+		Element objLanguageBlock = xml.createElement(CONST.BLOCK);
+		objLanguageBlock.setAttribute(CONST.TYPE, typeValue);
+		objLanguageBlock.appendChild(fieldElem);
+
+		return objLanguageBlock;
+
+	}
+
+	private Element createStatementElement(String nameValue, Element innerBlock) {
+
+		Element termMapStatement = xml.createElement(CONST.STATEMENT);
+		termMapStatement.setAttribute(CONST.NAME, nameValue);
+		termMapStatement.appendChild(innerBlock);
+
+		return termMapStatement;
+	}
+
+	private Element putInValueElement(Element innerElem) {
+
+		Element valueElm = xml.createElement(CONST.VALUE);
+		valueElm.setAttribute(CONST.NAME, CONST.TERMTYPEVALUE);
+		valueElm.appendChild(innerElem);
+
+		return valueElm;
+
+	}
+	
+	
+	/**
+	 * Creates a join condition statement element and
+	 * nests each one in a <next> element if necessary
+	 * 
+	 * @param joinList
+	 * @return
+	 */
+	private Element createJoinCondStatement(List<Join> joinList){
+		
+		Element savedJoinCondBlock = null;
+		Element basicJoinCondBlock = null;
+
+		for (int i = 0; i < joinList.size(); i++) {
+
+			
+			if (i < (joinList.size() - 1)) {
+				// More than one map, but this is not the last one
+
+				basicJoinCondBlock = createJoinCondBlock(joinList.get(i));
+
+				/*
+				 * If this is the first graph, there will be no saved graph
+				 */
+				if (savedJoinCondBlock != null) {
+					basicJoinCondBlock.appendChild(savedJoinCondBlock);
+				}
+
+				/*
+				 * This is not the last graph, so use a <next> block
+				 */
+				basicJoinCondBlock = putInNextElement(basicJoinCondBlock);
+
+				/*
+				 * Save this for the next iteration
+				 */
+				savedJoinCondBlock = basicJoinCondBlock;
+
+			} else if (i == (joinList.size() - 1)) {
+				// Only one map, or this is the last one
+
+				basicJoinCondBlock = createJoinCondBlock(joinList.get(i));
+
+				/*
+				 * If this is the only map, then defend against
+				 * savedPredMapBlock being null (as initialised).
+				 */
+				if (savedJoinCondBlock != null) {
+
+					/*
+					 * Recall, any savedGraphBlock will already be surrounded by
+					 * a <next> block
+					 */
+					basicJoinCondBlock.appendChild(savedJoinCondBlock);
+
+				}
+
+			}
+
+		}
+
+		/*
+		 * This needs to be in a <statement> element
+		 */
+		Element joinCondStatement = xml.createElement(CONST.STATEMENT);
+		joinCondStatement.setAttribute(CONST.NAME, CONST.JOINCONDITION);
+		joinCondStatement.appendChild(basicJoinCondBlock);
+
+		return joinCondStatement;
+		
+	}
+	
+	/**
+	 * Used for Join conditions in ReferenceObjects 
+	 * 
+	 * 
+            <block type="joincondition">
+              <field name="CHILD">join_2</field>
+              <field name="PARENT">join_2</field>
+            </block>
+	 * 
+	 * @return
+	 */
+	private Element createJoinCondBlock(Join jn){
+		
+		String childStr = jn.getChild();
+		String parentStr = jn.getParent();
+		
+		Element joinChildField = createFieldElement(CONST.CHILD_UC,childStr);
+		Element joinParentField = createFieldElement(CONST.PARENT_UC, parentStr);
+		
+		Element joinBlockElem = xml.createElement(CONST.BLOCK);
+		joinBlockElem.setAttribute(CONST.TYPE, CONST.JOINCONDITION);
+		joinBlockElem.appendChild(joinChildField);
+		joinBlockElem.appendChild(joinParentField);
+		
+		System.out.println("Basic Join block...");
+		PrettyPrintXML.printElement(joinBlockElem);
+		
+		return joinBlockElem;
+	}
+
 }

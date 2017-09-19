@@ -41,14 +41,11 @@ public class ProcessPredicateObjectMaps {
 		 */
 		for(int i = 0; i < pomList.size(); i++){
 			
-			System.out.println("PROCESSING POM NUMBER " + (i+1));
-	
 			PredicateObjectMap pom = pomList.get(i);
 			
 			/*
 			 * Create a basic POM statement and inner block
 			 */
-
 			if(i < (pomList.size() - 1)){
 				/*
 				 * There is more than one PredicateObjectMap, and the current one is

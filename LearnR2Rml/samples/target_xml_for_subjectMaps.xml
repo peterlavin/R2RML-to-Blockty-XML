@@ -573,8 +573,51 @@ seeing 2/more classes... 1
                         </statement>
 
 
+                        <statement name="opredicateobjectmap">
+                          <block type="objectmap">
+                            <field name="TERMMAP">COLUMN</field>
+                            <field name="TERMMAPVALUE">fourth_obj</field>
+                            <statement name="termmap">
+                              <block type="objecttermtype">
+                                <field name="TERMTYPE">termtypeblanknode</field>
+                              </block>
+                            </statement>
+                          </block>
+                        </statement>
 
 
+
+		<!-- Join condition  -->
+
+            <statement name="predicateobjectmap">
+              <block type="predicateobjectmap">
+                <statement name="ppredicateobjectmap">
+                  <block type="predicatemap">
+                    <field name="TERMMAP">CONSTANT</field>
+                    <field name="TERMMAPVALUE">xsd:something</field>
+                  </block>
+                </statement>
+
+                <statement name="opredicateobjectmap">
+                  <block type="parenttriplesmap">
+                    <field name="PARENTTRIPLEMAP">TripleMap1</field>
+                    <statement name="joincondition">
+                      <block type="joincondition">
+                        <field name="CHILD">city</field>
+                        <field name="PARENT">city</field>
+                        <next>
+                          <block type="joincondition">
+                            <field name="CHILD">id</field>
+                            <field name="PARENT">id</field>
+                          </block>
+                        </next>
+                      </block>
+                    </statement>
+                  </block>
+                </statement>
+
+              </block>
+            </statement>
 
 
 

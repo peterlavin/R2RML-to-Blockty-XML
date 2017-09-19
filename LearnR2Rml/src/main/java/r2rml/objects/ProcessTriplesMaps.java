@@ -23,8 +23,6 @@ public class ProcessTriplesMaps {
 		
 		for (Resource res : resMap.keySet()) {
 
-			System.out.println(" +++ Processing " + res.getLocalName() + " +++\n");
-
 			TriplesMap tmap = resMap.get(res);
 
 			/*

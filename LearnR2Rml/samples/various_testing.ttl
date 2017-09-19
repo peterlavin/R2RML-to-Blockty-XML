@@ -1,75 +1,65 @@
 # Mapping created using R2RML editor.
   @prefix rr: <http://www.w3.org/ns/r2rml#> .
-  @prefix foaf: <http://xmlns.com/foaf/0.1/> .
-  @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+  @prefix foaf: <http://foaf.com/foaf/0.1/> .
   @prefix ex: <http://example.org/> .
 
   <#TripleMap1>
   rr:logicalTable [
-    rr:tableName "employees";
+    rr:tableName "employees;";
   ];
      rr:subjectMap [
-      rr:template "http://example/org/employee/{id}";
+      rr:template "http://example.com/employee/{id}";
       rr:class foaf:Person;
-      rr:class ex:Person;
     ];
 
      rr:predicateObjectMap [
       rr:predicateMap [
-        rr:constant foaf:givenName;
-        rr:termType rr:IRI;
-      ];
-      rr:predicateMap [
-        rr:constant foaf:familyName;
-        rr:termType rr:IRI;
-      ];
-      rr:predicateMap [
-        rr:constant foaf:middleName;
+        rr:constant foaf:based_near;
         rr:termType rr:IRI;
       ];
 
        rr:objectMap [
-        rr:column "first_name";
-        rr:termType rr:Literal;
-          rr:datatype xsd:string;
+        rr:parentTriplesMap <#TripleMap2>;
+        rr:joinCondition [
+           rr:child "child_city";
+           rr:parent "parent_city";
+        ];
+        rr:joinCondition [
+           rr:child "child_id";
+           rr:parent "parent_id";
+        ];
+      ];rr:objectMap [
+        rr:parentTriplesMap <#TripleMap2>;
+        rr:joinCondition [
+           rr:child "join_2";
+           rr:parent "join_2";
+        ];
       ];
+       rr:graphMap [
+      	rr:constant ex:graph_1;
+      ];
+    ];
+   .
 
-     ];
-    rr:predicateObjectMap [
+  <#TripleMap2>
+  rr:logicalTable [
+    rr:sqlQuery """select * from employees;""";
+  ];
+     rr:subjectMap [
+      rr:template "insert value";
+      rr:class foaf:Spatial_thing;
+    ];
+
+     rr:predicateObjectMap [
       rr:predicateMap [
-        rr:constant foaf:familyName;
+        rr:constant ex:label;
         rr:termType rr:IRI;
       ];
 
        rr:objectMap [
-        rr:column "last_name";
-        rr:termType rr:Literal;
-          rr:language "en";
-      ];
-
-     ];
-    rr:predicateObjectMap [
-      rr:predicateMap [
-        rr:constant foaf:third_pom;
-        rr:termType rr:IRI;
-      ];
-
-       rr:objectMap [
-        rr:template "third_name";
-        rr:termType rr:Literal;
-      ];
-
-     ];
-    rr:predicateObjectMap [
-      rr:predicateMap [
-        rr:constant foaf:fourth_pom;
-        rr:termType rr:IRI;
-      ];
-
-       rr:objectMap [
-        rr:column "fourth_obj";
-        rr:termType rr:BlankNode;
+        rr:column "city";
       ];
 
      ];
    .
+

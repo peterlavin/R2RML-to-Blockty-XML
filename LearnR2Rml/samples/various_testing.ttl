@@ -34,7 +34,10 @@
            rr:child "join_2";
            rr:parent "join_2";
         ];
+      ];rr:objectMap [
+        rr:column "with_joins";
       ];
+
        rr:graphMap [
       	rr:constant ex:graph_1;
       ];

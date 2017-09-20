@@ -14,7 +14,8 @@
             <statement name="opredicateobjectmap">   <!-- Same to here -->
               <block type="parenttriplesmap">
                 <field name="PARENTTRIPLEMAP">TripleMap2</field>
-                <statement name="joincondition">
+
+                <statement name="joincondition">       <!-- join condition statement start -->
                   <block type="joincondition">
                     <field name="CHILD">child_city</field>
                     <field name="PARENT">parent_city</field>
@@ -25,7 +26,7 @@
                       </block>
                     </next>
                   </block>
-                </statement>
+                </statement>      <!-- join condition statement end -->
               </block>
             </statement>
 

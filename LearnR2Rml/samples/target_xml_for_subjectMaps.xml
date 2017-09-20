@@ -620,18 +620,187 @@ seeing 2/more classes... 1
             </statement>
 
 
+<!-- JOIN CONDITIONS -->
+
+<!-- For a single Join in a POM -->
+
+        <statement name="predicateobjectmap">
+          <block type="predicateobjectmap">
+            <statement name="ppredicateobjectmap">
+              <block type="predicatemap">
+                <field name="TERMMAP">CONSTANT</field>
+                <field name="TERMMAPVALUE">foaf:based_near</field>
+              </block>
+            </statement>
+
+            <statement name="opredicateobjectmap">   <!-- Same to here -->
+              <block type="parenttriplesmap">
+                <field name="PARENTTRIPLEMAP">TripleMap2</field>
+
+                <statement name="joincondition">       <!-- join condition statement start -->
+                  <block type="joincondition">
+                    <field name="CHILD">child_city</field>
+                    <field name="PARENT">parent_city</field>
+                    <next>
+                      <block type="joincondition">
+                        <field name="CHILD">child_id</field>
+                        <field name="PARENT">parent_id</field>
+                      </block>
+                    </next>
+                  </block>
+                </statement>      <!-- join condition statement end -->
+              </block>
+            </statement>
+
+
+            <statement name="graphmap">
+              <block type="predicategraphtermap">
+                <field name="TERMMAP">CONSTANT</field>
+                <field name="TERMMAPVALUE">ex:graph_1</field>
+              </block>
+            </statement>
+          </block>
+        </statement>
 
 
 
+<!-- 2 Joins in one POM -->
+
+
+        <statement name="predicateobjectmap">
+          <block type="predicateobjectmap">
+            <statement name="ppredicateobjectmap">
+              <block type="predicatemap">
+                <field name="TERMMAP">CONSTANT</field>
+                <field name="TERMMAPVALUE">foaf:based_near</field>
+              </block>
+            </statement>
+
+            <statement name="opredicateobjectmap">     <!-- Same to here -->
+              <block type="parenttriplesmap">
+                <field name="PARENTTRIPLEMAP">TripleMap2</field>
+                <statement name="joincondition">
+                  <block type="joincondition">
+                    <field name="CHILD">child_city</field>
+                    <field name="PARENT">parent_city</field>
+                    <next>
+                      <block type="joincondition">
+                        <field name="CHILD">child_id</field>
+                        <field name="PARENT">parent_id</field>
+                      </block>
+                    </next>
+                  </block>
+                </statement>
+                <next>
+                  <block type="parenttriplesmap">
+                    <field name="PARENTTRIPLEMAP">TripleMap2</field>
+                    <statement name="joincondition">
+                      <block type="joincondition">
+                        <field name="CHILD">join_2</field>
+                        <field name="PARENT">join_2</field>
+                      </block>
+                    </statement>
+                  </block>
+                </next>
+              </block>
+            </statement>
+
+
+            <statement name="graphmap">
+              <block type="predicategraphtermap">
+                <field name="TERMMAP">CONSTANT</field>
+                <field name="TERMMAPVALUE">ex:graph_1</field>
+              </block>
+            </statement>
+          </block>
+        </statement>
 
 
 
+<!-- Combination of Object Maps and Joins (RefObject Maps) -->
 
 
 
+        <statement name="predicateobjectmap">
+          <block type="predicateobjectmap">
+            <statement name="ppredicateobjectmap">
+              <block type="predicatemap">
+                <field name="TERMMAP">CONSTANT</field>
+                <field name="TERMMAPVALUE">foaf:based_near</field>
+              </block>
+            </statement>
+
+            <statement name="opredicateobjectmap">
+              <block type="parenttriplesmap">
+                <field name="PARENTTRIPLEMAP">TripleMap2</field>
+                <statement name="joincondition">
+                  <block type="joincondition">
+                    <field name="CHILD">child_city</field>
+                    <field name="PARENT">parent_city</field>
+                    <next>
+                      <block type="joincondition">
+                        <field name="CHILD">child_id</field>
+                        <field name="PARENT">parent_id</field>
+                      </block>
+                    </next>
+                  </block>
+                </statement>
+                <next>
+
+                  <block type="parenttriplesmap">
+                    <field name="PARENTTRIPLEMAP">TripleMap2</field>
+                    <statement name="joincondition">
+                      <block type="joincondition">
+                        <field name="CHILD">join_2</field>
+                        <field name="PARENT">join_2</field>
+                      </block>
+                    </statement>
+                    <next>
+                      <block type="objectmap">
+                        <field name="TERMMAP">COLUMN</field>
+                        <field name="TERMMAPVALUE">with_joins</field>
+                      </block>
+                    </next>
+                  </block>
+
+                </next>
+              </block>
+            </statement>
+            <statement name="graphmap">
+              <block type="predicategraphtermap">
+                <field name="TERMMAP">CONSTANT</field>
+                <field name="TERMMAPVALUE">ex:graph_1</field>
+              </block>
+            </statement>
+          </block>
+        </statement>
 
 
+		<!-- Join with multiple Obj Maps -->
 
+
+                  <block type="parenttriplesmap">
+                    <field name="PARENTTRIPLEMAP">TripleMap2</field>
+                    <statement name="joincondition">
+                      <block type="joincondition">
+                        <field name="CHILD">join_2</field>
+                        <field name="PARENT">join_2</field>
+                      </block>
+                    </statement>
+                    <next>
+                      <block type="objectmap">
+                        <field name="TERMMAP">COLUMN</field>
+                        <field name="TERMMAPVALUE">with_joins</field>
+                        <next>
+                          <block type="objectmap" id="RPG8V^Er2F{6nI+`fux;">
+                            <field name="TERMMAP">COLUMN</field>
+                            <field name="TERMMAPVALUE">second_with_joins</field>
+                          </block>
+                        </next>
+                      </block>
+                    </next>
+                  </block>
+        
 
 
 

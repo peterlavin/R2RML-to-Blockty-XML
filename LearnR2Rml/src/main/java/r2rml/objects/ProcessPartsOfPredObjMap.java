@@ -38,31 +38,35 @@ public class ProcessPartsOfPredObjMap {
 		Element predMapStatement = createPredicateMap(pom.getPredicateMaps());
 		predObjBlock.appendChild(predMapStatement);
 
-
 		/*
-		 * A PredicateObjectMap must have at least one predicate map.
-		 * It must also have at least one object map,
-		 * or one join condition.
-		 * 
-		 * Although there can be a mix of Joins and Object Maps,
-		 * only one is processed TODO, fix this
+		 * A PredicateObjectMap must also have at least one object map, or one
+		 * join condition, but may also have a combination of both object maps
+		 * and join(s)
 		 */
-		if(!pom.getObjectMaps().isEmpty()){
-			
+		if (!pom.getObjectMaps().isEmpty() && pom.getRefObjectMaps().isEmpty()) {
+			// Has Object Maps but no RefObjectMaps (Joins)
+
 			Element objectMapStatement = createObjMap(pom.getObjectMaps());
 			predObjBlock.appendChild(objectMapStatement);
-		
-		} else if (!pom.getRefObjectMaps().isEmpty()){
-			
+
+			System.out.println("\n!!!!! Found Object Maps  !!!!\n");
+
+		} else if (!pom.getRefObjectMaps().isEmpty() && pom.getObjectMaps().isEmpty()) {
+			// Has RefObjectMaps (joins) but no Object Maps
+
 			System.out.println("\n!!!!! Found Joins !!!!\n");
-			
-			
+
 			Element joinMapStatement = createJoinMap(pom.getRefObjectMaps());
 			predObjBlock.appendChild(joinMapStatement);
-			
+
+		} else if (!pom.getObjectMaps().isEmpty() && !pom.getRefObjectMaps().isEmpty()) {
+			// Has both Object Maps and RefObjectMaps (joins)
+
+			Element joinsAndObjJoinMapStatement = createJoinsAndObjMap(pom.getRefObjectMaps(), pom.getObjectMaps());
+			predObjBlock.appendChild(joinsAndObjJoinMapStatement);
+
 		}
 
-		
 		if (!pom.getGraphMaps().isEmpty()) {
 
 			Element graphMapsStatement = createGraphMap(pom.getGraphMaps());
@@ -249,7 +253,7 @@ public class ProcessPartsOfPredObjMap {
 	 */
 	private Element createJoinMap(List<RefObjectMap> refObjectList) {
 		// TODO joinMap
-		
+
 		Element savedRefObjBlock = null;
 		Element basicRefObjBlock = null;
 
@@ -320,6 +324,102 @@ public class ProcessPartsOfPredObjMap {
 		RefObjStatement.appendChild(basicRefObjBlock);
 
 		return RefObjStatement;
+
+	}
+
+	/**
+	 * Creates an element which contains a mix of RefObject (joins) and Object
+	 * Maps.
+	 * 
+	 * @param refObjectMaps
+	 * @param objectMaps
+	 * @return
+	 */
+	private Element createJoinsAndObjMap(List<RefObjectMap> refObjMaps, List<ObjectMap> objectMaps) {
+
+		/*
+		 * First, Create the block for the Object Map(s), this is placed in a
+		 * <next> and added after the first RefObject Map (join) is processed.
+		 */
+
+		/*
+		 * This returns a <statement> element, so need to get the <block> within
+		 * it.
+		 */
+		Element objectMapStatement = createObjMap(objectMaps);
+		Element objectMapBlock = (Element) objectMapStatement.getFirstChild();
+
+		Element basicJoinAndObjBlock = null;
+		Element savedJoinAndObjBlock = null;
+
+		for (int i = 0; i < refObjMaps.size(); i++) {
+
+			if (i < (refObjMaps.size() - 1)) {
+
+				basicJoinAndObjBlock = createBasicRefObjBlock(refObjMaps.get(i));
+
+				/*
+				 * If this is the first join, append objectMapBlock in a <next>
+				 * element (only ever happens once)
+				 */
+				if (i == 0) {
+					objectMapBlock = putInNextElement(objectMapBlock);
+					basicJoinAndObjBlock.appendChild(objectMapBlock);
+				}
+
+				/*
+				 * If savedJoinAndObjBlock is not null, append it
+				 */
+				if (savedJoinAndObjBlock != null) {
+					basicJoinAndObjBlock.appendChild(savedJoinAndObjBlock);
+				}
+
+				/*
+				 * As this is NOT the last class, put basicJoinAndObjBlock in a
+				 * <next> block and assign to 'saved' element
+				 */
+				basicJoinAndObjBlock = putInNextElement(basicJoinAndObjBlock);
+
+				savedJoinAndObjBlock = basicJoinAndObjBlock;
+
+			} else if (i == (refObjMaps.size() - 1)) {
+				/*
+				 * This is only class, or the last one, no <next> needed
+				 */
+
+				basicJoinAndObjBlock = createBasicRefObjBlock(refObjMaps.get(i));
+
+				/*
+				 * If this is the first join, append objectMapBlock in a <next>
+				 * element (only ever happens once)
+				 */
+				if (i == 0) {
+					objectMapBlock = putInNextElement(objectMapBlock);
+					basicJoinAndObjBlock.appendChild(objectMapBlock);
+				}
+
+				/*
+				 * If this is the last of many joins, append previously saved
+				 * elements
+				 */
+				if (savedJoinAndObjBlock != null) {
+					basicJoinAndObjBlock.appendChild(savedJoinAndObjBlock);
+				}
+
+			}
+
+		}
+
+		
+		
+		/*
+		 * This needs to be in a <statement> element
+		 */
+		Element joinAndObjStatement = xml.createElement(CONST.STATEMENT);
+		joinAndObjStatement.setAttribute(CONST.NAME, CONST.OPREDICATEOBJECTMAP);
+		joinAndObjStatement.appendChild(basicJoinAndObjBlock);
+
+		return joinAndObjStatement;
 		
 		
 		
@@ -327,17 +427,6 @@ public class ProcessPartsOfPredObjMap {
 		
 		
 		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		/////////////////////////////////////////////////////
 	}
 
 	/**
@@ -754,58 +843,38 @@ public class ProcessPartsOfPredObjMap {
 		return pomObjectMapBlock;
 
 	}
-	
-	
-	
+
 	private Element createBasicRefObjBlock(RefObjectMap rom) {
 		// TODO Auto-generated method stub
-		
-		/*
-		 * Create a basic Reference Object Block to go into a
-		 * <statement name="opredicateobjectmap">, the same
-		 * place as an ObjectMap goes.
-		 */
-		
-		String parentTripMap = rom.getParentTriplesMap().getLocalName();
-		
-		Element fieldParentTripMap = createFieldElement(CONST.PARENTTRIPLEMAP_UC ,parentTripMap);
-		
-		Element blockParentTripMap = createBlockElement(CONST.PARENTTRIPLESMAP , fieldParentTripMap);
 
 		/*
-		 * TODO, unsure if Join list can be empty,
-		 * in if-stm for fail safety
+		 * Create a basic Reference Object Block to go into a <statement
+		 * name="opredicateobjectmap">, the same place as an ObjectMap goes.
 		 */
-		if(!rom.getJoins().isEmpty()){
-			
+
+		String parentTripMap = rom.getParentTriplesMap().getLocalName();
+
+		Element fieldParentTripMap = createFieldElement(CONST.PARENTTRIPLEMAP_UC, parentTripMap);
+
+		Element blockParentTripMap = createBlockElement(CONST.PARENTTRIPLESMAP, fieldParentTripMap);
+
+		/*
+		 * TODO, unsure if Join list can be empty, in if-stm for fail safety
+		 */
+		if (!rom.getJoins().isEmpty()) {
+
 			List<Join> joinList = rom.getJoins();
 			Element joinStatementElement = createJoinCondStatement(joinList);
 			blockParentTripMap.appendChild(joinStatementElement);
-			
+
 		}
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		//  put this in a <statement name="opredicateobjectmap">
+
+		// put this in a <statement name="opredicateobjectmap">
 		// TODO, deal with a mix of joins and obj maps, i.e. do
 		// not make two of <statement name="opredicateobjectmap">
-		
-		
-		
+
 		return blockParentTripMap;
 	}
-
-	
-	
-	
-	
 
 	/*
 	 * Helper reusable methods to create field, block and statement element.
@@ -847,23 +916,21 @@ public class ProcessPartsOfPredObjMap {
 		return valueElm;
 
 	}
-	
-	
+
 	/**
-	 * Creates a join condition statement element and
-	 * nests each one in a <next> element if necessary
+	 * Creates a join condition statement element and nests each one in a
+	 * <next> element if necessary
 	 * 
 	 * @param joinList
 	 * @return
 	 */
-	private Element createJoinCondStatement(List<Join> joinList){
-		
+	private Element createJoinCondStatement(List<Join> joinList) {
+
 		Element savedJoinCondBlock = null;
 		Element basicJoinCondBlock = null;
 
 		for (int i = 0; i < joinList.size(); i++) {
 
-			
 			if (i < (joinList.size() - 1)) {
 				// More than one map, but this is not the last one
 
@@ -917,36 +984,34 @@ public class ProcessPartsOfPredObjMap {
 		joinCondStatement.appendChild(basicJoinCondBlock);
 
 		return joinCondStatement;
-		
+
 	}
-	
+
 	/**
-	 * Used for Join conditions in ReferenceObjects 
+	 * Used for Join conditions in ReferenceObjects
 	 * 
 	 * 
-            <block type="joincondition">
-              <field name="CHILD">join_2</field>
-              <field name="PARENT">join_2</field>
-            </block>
+	 * <block type="joincondition"> <field name="CHILD">join_2</field>
+	 * <field name="PARENT">join_2</field> </block>
 	 * 
 	 * @return
 	 */
-	private Element createJoinCondBlock(Join jn){
-		
+	private Element createJoinCondBlock(Join jn) {
+
 		String childStr = jn.getChild();
 		String parentStr = jn.getParent();
-		
-		Element joinChildField = createFieldElement(CONST.CHILD_UC,childStr);
+
+		Element joinChildField = createFieldElement(CONST.CHILD_UC, childStr);
 		Element joinParentField = createFieldElement(CONST.PARENT_UC, parentStr);
-		
+
 		Element joinBlockElem = xml.createElement(CONST.BLOCK);
 		joinBlockElem.setAttribute(CONST.TYPE, CONST.JOINCONDITION);
 		joinBlockElem.appendChild(joinChildField);
 		joinBlockElem.appendChild(joinParentField);
-		
+
 		System.out.println("Basic Join block...");
 		PrettyPrintXML.printElement(joinBlockElem);
-		
+
 		return joinBlockElem;
 	}
 

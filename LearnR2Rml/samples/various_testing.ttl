@@ -3,7 +3,53 @@
   @prefix foaf: <http://foaf.com/foaf/0.1/> .
   @prefix ex: <http://example.org/> .
 
+  <#TripleMap2>
+  rr:logicalTable [
+    rr:sqlQuery """select * from employees""";
+  ];
+     rr:subjectMap [
+      rr:template "http://example.com/employee/{id}";
+      rr:class foaf:Spatial_thing;
+    ];
+
+     rr:predicateObjectMap [
+      rr:predicateMap [
+        rr:constant ex:label;
+        rr:termType rr:IRI;
+      ];
+
+       rr:objectMap [
+        rr:constant foaf:con_no_tt;
+        rr:termType rr:IRI;
+      ];
+
+     ];
+   .
+
   <#TripleMap1>
+  rr:logicalTable [
+    rr:tableName "employees;";
+  ];
+     rr:subjectMap [
+      rr:template "http://example.com/employee/{id}";
+      rr:class foaf:Person;
+    ];
+
+     rr:predicateObjectMap [
+      rr:predicateMap [
+        rr:constant ex:label;
+        rr:termType rr:IRI;
+      ];
+
+       rr:objectMap [
+        rr:column "city_blank";
+        rr:termType rr:BlankNode;
+      ];
+
+     ];
+   .
+
+  <#TripleMap13>
   rr:logicalTable [
     rr:tableName "employees;";
   ];
@@ -35,34 +81,17 @@
            rr:parent "join_2";
         ];
       ];rr:objectMap [
-        rr:column "with_joins";
+        rr:column "ex:col_no_tt";
+      ];
+      rr:objectMap [
+        rr:constant ex:blah;
+        rr:termType rr:Literal;
+          rr:language "eng";
       ];
 
        rr:graphMap [
       	rr:constant ex:graph_1;
       ];
     ];
-   .
-
-  <#TripleMap2>
-  rr:logicalTable [
-    rr:sqlQuery """select * from employees;""";
-  ];
-     rr:subjectMap [
-      rr:template "insert value";
-      rr:class foaf:Spatial_thing;
-    ];
-
-     rr:predicateObjectMap [
-      rr:predicateMap [
-        rr:constant ex:label;
-        rr:termType rr:IRI;
-      ];
-
-       rr:objectMap [
-        rr:column "city";
-      ];
-
-     ];
    .
 

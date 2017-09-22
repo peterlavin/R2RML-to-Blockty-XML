@@ -108,11 +108,15 @@ public class ProcessPartsOfPredObjMap {
 				prefixAndName = getResourcePrefix(pm.getConstant().asResource());
 
 			} else if (pm.isColumnValuedTermMap()) {
+				
 				termMapTypeStr = CONST.COLUMN_UC;
 				prefixAndName = pm.getColumn().toString();
+				
 			} else {
+				
 				termMapTypeStr = CONST.TEMPLATE_UC;
 				prefixAndName = pm.getTemplate().toString();
+				
 			}
 
 			if (i < (predMapsList.size() - 1)) {
@@ -309,8 +313,6 @@ public class ProcessPartsOfPredObjMap {
 					basicRefObjBlock.appendChild(savedRefObjBlock);
 
 				}
-				// System.out.println("subjGraphBlock for LAST GRAPH...\n");
-				// PrettyPrintXML.printElement(basicGraphBlock);
 
 			}
 
@@ -410,23 +412,15 @@ public class ProcessPartsOfPredObjMap {
 
 		}
 
-		
-		
 		/*
 		 * This needs to be in a <statement> element
 		 */
 		Element joinAndObjStatement = xml.createElement(CONST.STATEMENT);
 		joinAndObjStatement.setAttribute(CONST.NAME, CONST.OPREDICATEOBJECTMAP);
 		joinAndObjStatement.appendChild(basicJoinAndObjBlock);
-
+		
 		return joinAndObjStatement;
-		
-		
-		
-		
-		
-		
-		
+
 	}
 
 	/**
@@ -459,11 +453,15 @@ public class ProcessPartsOfPredObjMap {
 				prefixAndName = getResourcePrefix(gm.getConstant().asResource());
 
 			} else if (gm.isColumnValuedTermMap()) {
+				
 				termMapTypeStr = CONST.COLUMN_UC;
 				prefixAndName = gm.getColumn().toString();
+				
 			} else {
+				
 				termMapTypeStr = CONST.TEMPLATE_UC;
 				prefixAndName = gm.getTemplate().toString();
+				
 			}
 
 			/*
@@ -516,8 +514,6 @@ public class ProcessPartsOfPredObjMap {
 					basicGraphBlock.appendChild(savedGraphBlock);
 
 				}
-				// System.out.println("subjGraphBlock for LAST GRAPH...\n");
-				// PrettyPrintXML.printElement(basicGraphBlock);
 
 			}
 
@@ -659,11 +655,15 @@ public class ProcessPartsOfPredObjMap {
 			prefixAndName = getResourcePrefix(om.getConstant().asResource());
 
 		} else if (om.isColumnValuedTermMap()) {
+			
 			termMapTypeStr = CONST.COLUMN_UC;
 			prefixAndName = om.getColumn().toString();
+			
 		} else if (om.isTemplateValuedTermMap()) {
+			
 			termMapTypeStr = CONST.TEMPLATE_UC;
 			prefixAndName = om.getTemplate().toString();
+			
 		}
 
 		/*
@@ -679,14 +679,11 @@ public class ProcessPartsOfPredObjMap {
 		fieldTermMapValue.appendChild(xml.createTextNode(prefixAndName));
 
 		/*
-		 * Check for literal types, if just a literal, make...
+		 * Check for literal types, if just a literal, do not
+		 * make any termtype statement
 		 * 
 		 * 
-		 * <statement name="termmap"> <block type="objecttermtype"> <field
-		 * name="TERMTYPE">termtype??????</field> </block> </statement>
-		 * 
-		 * 
-		 * if a leteral and has language *OR* datatype is set, make...
+		 * if a literal and has language *OR* datatype is set, make...
 		 * 
 		 * <statement name="termmap"> <block type="objecttermtype"> <field
 		 * name="TERMTYPE">termtypeliteral</field> <value name="termtypevalue">
@@ -715,9 +712,21 @@ public class ProcessPartsOfPredObjMap {
 
 			/*
 			 * If there is a datatype or language set, add a <value> element for
-			 * this, append to block also
+			 * this, append to block also.
+			 * 
+			 * The model dictates that there cannot be a language AND a datatype set
 			 */
 
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
 			if (!om.getLanguages().isEmpty()) {
 
 				String languageValue = om.getLanguages().get(0).getObject().toString();
@@ -740,9 +749,6 @@ public class ProcessPartsOfPredObjMap {
 				// Append with other fields
 				termMapStatement.appendChild(objTermTypeBlock);
 
-				System.out.println("After dealing wt language");
-				PrettyPrintXML.printElement(termMapStatement);
-
 			} else if (!om.getDatatypes().isEmpty()) {
 
 				String datatypeValue = getResourcePrefix(om.getDatatypes().get(0).getObject().asResource());
@@ -761,21 +767,36 @@ public class ProcessPartsOfPredObjMap {
 				// Append with other fields
 				termMapStatement.appendChild(objTermTypeBlock);
 
-				System.out.println("After dealing wt datatype");
-				PrettyPrintXML.printElement(termMapStatement);
 
 			} else if (om.getDatatypes().isEmpty() && om.getLanguages().isEmpty()) {
 				/*
-				 * Is a literal but *NO* DataType or Language is set
+				 * Is a literal but *NO* DataType or Language is set,
+				 * 
+				 * do not add anything
 				 */
 
-				// Just create a Statement element
-				termMapStatement = createStatementElement(CONST.TERMMAP, objTermTypeBlock);
-
-				// Append the basic termmap statement
-				termMapStatement.appendChild(objTermTypeBlock);
+//				// Just create a Statement element
+//				termMapStatement = createStatementElement(CONST.TERMMAP, objTermTypeBlock);
+//
+//				// Append the basic termmap statement
+//				termMapStatement.appendChild(objTermTypeBlock);
+//				
+//				System.out.println("objTermTypeBlock......");
+//				PrettyPrintXML.printElement(objTermTypeBlock);
 
 			}
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
 
 		} else if (om.isTermTypeBlankNode()) {
 			/*
@@ -790,9 +811,6 @@ public class ProcessPartsOfPredObjMap {
 			Element fieldBntTermMap = createFieldElement(CONST.TERMTYPE_UC, CONST.TERMTYPEBLANKNODE);
 
 			Element objTermTypeBlock = createBlockElement(CONST.OBJECTTERMTYPE, fieldBntTermMap);
-
-			System.out.println("For termtypeblanknode");
-			PrettyPrintXML.printElement(objTermTypeBlock);
 
 			termMapStatement = createStatementElement(CONST.TERMMAP, objTermTypeBlock);
 
@@ -812,9 +830,6 @@ public class ProcessPartsOfPredObjMap {
 			Element objTermTypeBlock = xml.createElement(CONST.BLOCK);
 			objTermTypeBlock.setAttribute(CONST.TYPE, CONST.OBJECTTERMTYPE);
 			objTermTypeBlock.appendChild(fieldIriTermMap);
-
-			System.out.println("For termtypeiri");
-			PrettyPrintXML.printElement(objTermTypeBlock);
 
 			// Just create a Statement element
 			termMapStatement = xml.createElement(CONST.STATEMENT);
@@ -844,6 +859,14 @@ public class ProcessPartsOfPredObjMap {
 
 	}
 
+	
+	/**
+	 * Creates a basic reference object block, may be called
+	 * multiple times where more that one is present.
+	 * 
+	 * @param rom
+	 * @return
+	 */
 	private Element createBasicRefObjBlock(RefObjectMap rom) {
 		// TODO Auto-generated method stub
 
@@ -1008,9 +1031,6 @@ public class ProcessPartsOfPredObjMap {
 		joinBlockElem.setAttribute(CONST.TYPE, CONST.JOINCONDITION);
 		joinBlockElem.appendChild(joinChildField);
 		joinBlockElem.appendChild(joinParentField);
-
-		System.out.println("Basic Join block...");
-		PrettyPrintXML.printElement(joinBlockElem);
 
 		return joinBlockElem;
 	}

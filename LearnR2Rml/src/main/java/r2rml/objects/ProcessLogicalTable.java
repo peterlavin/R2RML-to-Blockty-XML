@@ -46,9 +46,6 @@ public class ProcessLogicalTable {
 			System.out.println("Something is gone wrong, no table nor sql query found");
 		}
 		
-		
-		
-		
 		Element tripmapBlockElem = (Element) tripmapStatementElem.getFirstChild();
 
 		if(tripmapBlockElem.hasAttribute(CONST.TYPE) && (tripmapBlockElem.getAttribute(CONST.TYPE).equalsIgnoreCase(CONST.TRIPLESMAP))){

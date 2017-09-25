@@ -3,29 +3,6 @@
   @prefix foaf: <http://foaf.com/foaf/0.1/> .
   @prefix ex: <http://example.org/> .
 
-  <#TripleMap2>
-  rr:logicalTable [
-    rr:sqlQuery """select * from employees""";
-  ];
-     rr:subjectMap [
-      rr:template "http://example.com/employee/{id}";
-      rr:class foaf:Spatial_thing;
-    ];
-
-     rr:predicateObjectMap [
-      rr:predicateMap [
-        rr:constant ex:label;
-        rr:termType rr:IRI;
-      ];
-
-       rr:objectMap [
-        rr:constant foaf:con_no_tt;
-        rr:termType rr:IRI;
-      ];
-
-     ];
-   .
-
   <#TripleMap1>
   rr:logicalTable [
     rr:tableName "employees;";
@@ -42,14 +19,13 @@
       ];
 
        rr:objectMap [
-        rr:column "city_blank";
-        rr:termType rr:BlankNode;
+        rr:column "city";
       ];
 
      ];
    .
 
-  <#TripleMap13>
+  <#TripleMap2>
   rr:logicalTable [
     rr:tableName "employees;";
   ];
@@ -65,7 +41,7 @@
       ];
 
        rr:objectMap [
-        rr:parentTriplesMap <#TripleMap2>;
+        rr:parentTriplesMap <#TripleMap3>;
         rr:joinCondition [
            rr:child "child_city";
            rr:parent "parent_city";
@@ -75,23 +51,43 @@
            rr:parent "parent_id";
         ];
       ];rr:objectMap [
-        rr:parentTriplesMap <#TripleMap2>;
+        rr:parentTriplesMap <#TripleMap3>;
         rr:joinCondition [
            rr:child "join_2";
            rr:parent "join_2";
         ];
       ];rr:objectMap [
-        rr:column "ex:col_no_tt";
+        rr:column "with_joins";
       ];
       rr:objectMap [
-        rr:constant ex:blah;
-        rr:termType rr:Literal;
-          rr:language "eng";
+        rr:column "second_with_joins";
       ];
 
        rr:graphMap [
       	rr:constant ex:graph_1;
       ];
     ];
+   .
+
+  <#TripleMap3>
+  rr:logicalTable [
+    rr:sqlQuery """select * from employees;""";
+  ];
+     rr:subjectMap [
+      rr:template "http://example.com/employee/{id}";
+      rr:class foaf:Spatial_thing;
+    ];
+
+     rr:predicateObjectMap [
+      rr:predicateMap [
+        rr:constant ex:label;
+        rr:termType rr:IRI;
+      ];
+
+       rr:objectMap [
+        rr:column "city";
+      ];
+
+     ];
    .
 

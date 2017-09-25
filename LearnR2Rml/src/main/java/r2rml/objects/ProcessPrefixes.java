@@ -94,7 +94,9 @@ public class ProcessPrefixes {
 
 		}
 		else{
-			// TODO, catch this, throw exception
+			
+			System.out.println("Something wrong, appending prefixes to root block element went wrong");
+
 		}
 		return xml;
 

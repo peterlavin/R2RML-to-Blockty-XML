@@ -18,134 +18,119 @@ public class ProcessPredicateObjectMaps {
 	private Document xml;
 
 	public ProcessPredicateObjectMaps(Document xml) {
-		
+
 		this.xml = xml;
-		
-		
-		
+
 	}
 
-	public void processPredicateObjectMaps(TriplesMap tmap, Element tripmapStatementElem) {
-		
-		
-		
+	public void processPredicateObjectMaps(TriplesMap tmap, Element tripmapBlockElem) {
+
 		List<PredicateObjectMap> pomList = tmap.getPredicateObjectMaps();
-		
+
 		Element predObjBlock = null;
 		Element savedPredObjBlock = null;
-		
-		
+
 		/*
-		 * There can be multiple Predicate Object Maps, each
-		 * one needs to be nested in <next> elements in the XML
+		 * There can be multiple Predicate Object Maps, each one needs to be
+		 * nested in <next> elements in the XML
 		 */
-		for(int i = 0; i < pomList.size(); i++){
-			
+		for (int i = 0; i < pomList.size(); i++) {
+
 			PredicateObjectMap pom = pomList.get(i);
-			
+
 			/*
 			 * Create a basic POM statement and inner block
 			 */
-			if(i < (pomList.size() - 1)){
+			if (i < (pomList.size() - 1)) {
 				/*
-				 * There is more than one PredicateObjectMap, and the current one is
-				 * any except not the last one. Therefore, <next> blocks are required.
+				 * There is more than one PredicateObjectMap, and the current
+				 * one is any except not the last one. Therefore, <next> blocks
+				 * are required.
 				 */
-				
-				
+
 				predObjBlock = createPomBlock();
-				
+
 				/*
 				 * Add parts for this pom here
 				 */
-				ProcessPartsOfPredObjMap ppom = new ProcessPartsOfPredObjMap(xml); 
+				ProcessPartsOfPredObjMap ppom = new ProcessPartsOfPredObjMap(xml);
 				ppom.processPartsPredObjMap(predObjBlock, pom);
-				
-				
-				if(savedPredObjBlock != null){
+
+				if (savedPredObjBlock != null) {
 					predObjBlock.appendChild(savedPredObjBlock);
 				}
-				
+
 				predObjBlock = putBlockInNext(predObjBlock);
 
 				savedPredObjBlock = predObjBlock;
-				
-				
-			} else if(i == (pomList.size() - 1)){
+
+			} else if (i == (pomList.size() - 1)) {
 				/*
-				 * This is either the only POM, or 
-				 * the last of many, no <next> required
+				 * This is either the only POM, or the last of many, no <next>
+				 * required
 				 */
-				
+
 				predObjBlock = createPomBlock();
-				
+
 				/*
 				 * Add parts for this pom here
 				 */
-				ProcessPartsOfPredObjMap ppom = new ProcessPartsOfPredObjMap(xml); 
+				ProcessPartsOfPredObjMap ppom = new ProcessPartsOfPredObjMap(xml);
 				ppom.processPartsPredObjMap(predObjBlock, pom);
-				
+
 				/*
 				 * Add all previously <next>'ed POMs
 				 */
-				
-				if(savedPredObjBlock != null){
-					
-					predObjBlock.appendChild(savedPredObjBlock);
-					
-				}
-				
-				
-			}
-			
 
+				if (savedPredObjBlock != null) {
+
+					predObjBlock.appendChild(savedPredObjBlock);
+
+				}
+
+			}
 
 		}
-		
-	
+
 		/*
-		 * Append the (possible multiple/nested POM elements
-		 * to the tripmapStatementElem pass in as an arg.
+		 * Append the (possible multiple/nested POM elements to the
+		 * tripmapStatementElem pass in as an arg.
 		 * 
-		 * There should always be a POM object for each
-		 * TriplesMap, if stm is used for sanity check only
+		 * There should always be a POM object for each TriplesMap, if stm is
+		 * used for sanity check only
 		 */
-		
-		if(predObjBlock != null){
-			
+
+		if (predObjBlock != null) {
+
 			Element predObjStatement = putBlockInStatement(predObjBlock);
-			
-			Element tripMapBlockElem = (Element) tripmapStatementElem.getFirstChild();
-			tripMapBlockElem.appendChild(predObjStatement);
-			
+
+			tripmapBlockElem.appendChild(predObjStatement);
+
 		} else {
 			System.out.println("NO PREDICATE OBJECT MAP ELEMENT FOUND - THIS IS BAD!!!!!!!");
 		}
-		
-		
-		
+
 	}
 
 	/*
-	 * Create an empty Predicate Object Map Statement and
-	 * inner block
+	 * Create an empty Predicate Object Map Statement and inner block
 	 */
 	private Element createPomBlock() {
-		
+
 		Element predObjStmBlock = xml.createElement(CONST.BLOCK);
 		predObjStmBlock.setAttribute(CONST.TYPE, CONST.PREDICATEOBJECTMAP);
-		
-	//	Element predOjbMapStm = xml.createElement(CONST.STATEMENT);
-	//	predOjbMapStm.setAttribute(CONST.NAME, CONST.PREDICATEOBJECTMAP);
-		
-	//	predOjbMapStm.appendChild(predObjStmBlock);
-		
-	//	return predOjbMapStm;
-		
+
+		// Element predOjbMapStm = xml.createElement(CONST.STATEMENT);
+		// predOjbMapStm.setAttribute(CONST.NAME, CONST.PREDICATEOBJECTMAP);
+
+		// predOjbMapStm.appendChild(predObjStmBlock);
+
+		// return predOjbMapStm;
+
 		return predObjStmBlock;
 	}
-	
-	 /* 
+
+	/*
 	 * Takes any block element and puts it in a <next></next> element
 	 */
 	private Element putBlockInNext(Element blockElm) {
@@ -157,16 +142,14 @@ public class ProcessPredicateObjectMaps {
 		return nextElement;
 
 	}
-	
-	private Element putBlockInStatement(Element predObjBlock){
-		
+
+	private Element putBlockInStatement(Element predObjBlock) {
+
 		Element pomStatemmentElm = xml.createElement(CONST.STATEMENT);
 		pomStatemmentElm.setAttribute(CONST.NAME, CONST.PREDICATEOBJECTMAP);
-		
+
 		pomStatemmentElm.appendChild(predObjBlock);
-		
-		
-		
+
 		return pomStatemmentElm;
 	}
 

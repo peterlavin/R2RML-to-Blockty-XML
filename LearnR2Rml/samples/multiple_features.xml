@@ -1,0 +1,170 @@
+<xml xmlns="http://www.w3.org/1999/xhtml">
+  <block type="mapping">
+    <statement name="mapping">
+      <block type="prefix">
+        <field name="PREFIX">foaf</field>
+        <field name="URI">http://foaf.com/foaf/0.1/</field>
+        <next>
+          <block type="prefix">
+            <field name="PREFIX">ex</field>
+            <field name="URI">http://example.org/</field>
+          </block>
+        </next>
+      </block>
+    </statement>
+    <statement name="triplesmap">
+      <block type="triplesmap">
+        <field name="TRIPLEMAPNAME">TripleMap1</field>
+        <statement name="logicaltable">
+          <block type="tablesqlquery">
+            <mutation sql="employees;"/>
+            <field name="TABLESQLQUERY">table</field>
+          </block>
+        </statement>
+        <statement name="subjectmap">
+          <block type="subjectmap">
+            <field name="TERMMAP">TEMPLATE</field>
+            <field name="TERMMAPVALUE">http://example.com/employee/{id}</field>
+            <statement name="termmap">
+              <block type="class">
+                <field name="CLASS">foaf:Person</field>
+              </block>
+            </statement>
+          </block>
+        </statement>
+        <statement name="predicateobjectmap">
+          <block type="predicateobjectmap">
+            <statement name="ppredicateobjectmap">
+              <block type="predicatemap">
+                <field name="TERMMAP">CONSTANT</field>
+                <field name="TERMMAPVALUE">ex:label</field>
+              </block>
+            </statement>
+            <statement name="opredicateobjectmap">
+              <block type="objectmap">
+                <field name="TERMMAP">COLUMN</field>
+                <field name="TERMMAPVALUE">city</field>
+              </block>
+            </statement>
+          </block>
+        </statement>
+        <next>
+          <block type="triplesmap">
+            <field name="TRIPLEMAPNAME">TripleMap13</field>
+            <statement name="logicaltable">
+              <block type="tablesqlquery" id="1cN.),ab[gbThTI4~a;5">
+                <mutation sql="employees;"/>
+                <field name="TABLESQLQUERY">table</field>
+              </block>
+            </statement>
+            <statement name="subjectmap">
+              <block type="subjectmap" id="Dnd9dNsyPDsysZ{=d.Qi">
+                <field name="TERMMAP">TEMPLATE</field>
+                <field name="TERMMAPVALUE">http://example.com/employee/{id}</field>
+                <statement name="termmap">
+                  <block type="class" id="(c~*v,=ra/@!*4#0_5Sb">
+                    <field name="CLASS">foaf:Person</field>
+                  </block>
+                </statement>
+              </block>
+            </statement>
+            <statement name="predicateobjectmap">
+              <block type="predicateobjectmap" id="6Jr+OIO_.8T!Y~TkmlK1">
+                <statement name="ppredicateobjectmap">
+                  <block type="predicatemap" id="@Fu/0mQ+Y`)]XQ.,@=13">
+                    <field name="TERMMAP">CONSTANT</field>
+                    <field name="TERMMAPVALUE">foaf:based_near</field>
+                  </block>
+                </statement>
+                <statement name="opredicateobjectmap">
+                  <block type="parenttriplesmap" id="RdkVSmMzl-8j_d*C@6O]">
+                    <field name="PARENTTRIPLEMAP">TripleMap2</field>
+                    <statement name="joincondition">
+                      <block type="joincondition" id="%qJcLe(3%MHjle`!js|x">
+                        <field name="CHILD">child_city</field>
+                        <field name="PARENT">parent_city</field>
+                        <next>
+                          <block type="joincondition" id="+Tne%A.?{QX9eSWx(DX2">
+                            <field name="CHILD">child_id</field>
+                            <field name="PARENT">parent_id</field>
+                          </block>
+                        </next>
+                      </block>
+                    </statement>
+                    <next>
+                      <block type="parenttriplesmap" id="D7n!^Q4NPK|iVqNzbx^t">
+                        <field name="PARENTTRIPLEMAP">TripleMap2</field>
+                        <statement name="joincondition">
+                          <block type="joincondition" id="9*7B@s7eB|X|QxUTU];m">
+                            <field name="CHILD">join_2</field>
+                            <field name="PARENT">join_2</field>
+                          </block>
+                        </statement>
+                        <next>
+                          <block type="objectmap" id="U_Z]/zp6Gx@/#Ej7W.d*">
+                            <field name="TERMMAP">COLUMN</field>
+                            <field name="TERMMAPVALUE">with_joins</field>
+                            <next>
+                              <block type="objectmap" id="RPG8V^Er2F{6nI+`fux;">
+                                <field name="TERMMAP">COLUMN</field>
+                                <field name="TERMMAPVALUE">second_with_joins</field>
+                              </block>
+                            </next>
+                          </block>
+                        </next>
+                      </block>
+                    </next>
+                  </block>
+                </statement>
+                <statement name="graphmap">
+                  <block type="predicategraphtermap" id="L]:?*3k=%vFO?P`jZCUi">
+                    <field name="TERMMAP">CONSTANT</field>
+                    <field name="TERMMAPVALUE">ex:graph_1</field>
+                  </block>
+                </statement>
+              </block>
+            </statement>
+            <next>
+              <block type="triplesmap" id="JsuA%!kC5A{l*M0gXh~@">
+                <field name="TRIPLEMAPNAME">TripleMap2</field>
+                <statement name="logicaltable">
+                  <block type="tablesqlquery" id="S)%WQA=pk9b{s!f9g=b?">
+                    <mutation sql="select * from employees;"/>
+                    <field name="TABLESQLQUERY">sqlquery</field>
+                  </block>
+                </statement>
+                <statement name="subjectmap">
+                  <block type="subjectmap" id="BEHnFQ/?ku8UXwx#nAeK">
+                    <field name="TERMMAP">TEMPLATE</field>
+                    <field name="TERMMAPVALUE">http://example.com/employee/{id}</field>
+                    <statement name="termmap">
+                      <block type="class" id="4KxioAfxJ9BPGC:mZKG~">
+                        <field name="CLASS">foaf:Spatial_thing</field>
+                      </block>
+                    </statement>
+                  </block>
+                </statement>
+                <statement name="predicateobjectmap">
+                  <block type="predicateobjectmap" id=";(0Iwt:?)a(0JDd~=J2@">
+                    <statement name="ppredicateobjectmap">
+                      <block type="predicatemap" id="-yuaS5YAR~D0N4QtfX3:">
+                        <field name="TERMMAP">CONSTANT</field>
+                        <field name="TERMMAPVALUE">ex:label</field>
+                      </block>
+                    </statement>
+                    <statement name="opredicateobjectmap">
+                      <block type="objectmap" id="7+Kok91w|R0rz]%L^)iu">
+                        <field name="TERMMAP">COLUMN</field>
+                        <field name="TERMMAPVALUE">city</field>
+                      </block>
+                    </statement>
+                  </block>
+                </statement>
+              </block>
+            </next>
+          </block>
+        </next>
+      </block>
+    </statement>
+  </block>
+</xml>

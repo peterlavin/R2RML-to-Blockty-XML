@@ -25,7 +25,7 @@ public class ProcessSubjectMap {
 
 	}
 
-	public void processSubjectMap(TriplesMap tmap, Element tripmapStatementElem) {
+	public void processSubjectMap(TriplesMap tmap, Element tripMapBlockElem) {
 
 		SubjectMap subjmap = tmap.getSubjectMap();
 
@@ -64,8 +64,8 @@ public class ProcessSubjectMap {
 		 * particular triplesmap. The subject map statement element and its
 		 * parts need to be inserted into the triplesmap block element within
 		 * this statement element
-		 */	
-		createBasicSubjMap(tripmapStatementElem, termMapTypeStr, termMapVariableStr);
+		 */
+		createBasicSubjMap(tripMapBlockElem, termMapTypeStr, termMapVariableStr);
 
 		/*
 		 * If there is anything other than the default TermType (i.e not IRI),
@@ -81,7 +81,8 @@ public class ProcessSubjectMap {
 		 * ProcessSmTermMap Class.
 		 */
 
-		Element tripMapBlockElem = (Element) tripmapStatementElem.getFirstChild();
+		// Element tripMapBlockElem = (Element)
+		// tripmapStatementElem.getFirstChild();
 
 		/*
 		 * Get all the statement Elements in this, there may be ones for
@@ -107,14 +108,13 @@ public class ProcessSubjectMap {
 		ProcessPartsOfSubjectMap ppsm = new ProcessPartsOfSubjectMap(xml);
 		ppsm.processPartsSubjMap(subjMapStatementElm, subjmap);
 
-
 	}
 
 	/*
 	 * Adds a basic SubjectMap element with no elements for a TermMap. This
 	 * assumes no classes and the default TermType, i.e. IRI.
 	 */
-	private void createBasicSubjMap(Element tripmapStatementElem, String termMapTypeStr, String termMapVariableStr) {
+	private void createBasicSubjMap(Element tripMapBlockElem, String termMapTypeStr, String termMapVariableStr) {
 
 		/*
 		 * In reverse order, create the required elements, then append
@@ -152,7 +152,6 @@ public class ProcessSubjectMap {
 		 * Append all of the above to the triples map statement element for this
 		 * particular triplesmap
 		 */
-		Element tripMapBlockElem = (Element) tripmapStatementElem.getFirstChild();
 		tripMapBlockElem.appendChild(subjectMapStatementElement);
 
 	}

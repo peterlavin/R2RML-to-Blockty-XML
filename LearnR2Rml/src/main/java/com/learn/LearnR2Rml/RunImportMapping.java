@@ -90,8 +90,9 @@ public class RunImportMapping {
 
 		/*
 		 * Un/comment for printing final output
+		 * 
+		 * For real world use, write this output to file on disk
 		 */
-
 		System.out.println("\nFINAL DOCUMENT...\n");
 		PrettyPrintXML.printDocument(xml);
 

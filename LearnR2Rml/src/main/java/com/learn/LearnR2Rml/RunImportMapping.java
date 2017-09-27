@@ -1,10 +1,6 @@
 package com.learn.LearnR2Rml;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
-
 import org.apache.jena.rdf.model.Resource;
 import org.w3c.dom.Document;
 
@@ -80,7 +76,6 @@ public class RunImportMapping {
 		 * Insert the prefix(s) into xml
 		 */
 		ProcessPrefixes pp = new ProcessPrefixes(xml);
-		//xml = 
 		pp.processPrefixes(pmap);
 
 		ProcessTriplesMaps ptm = new ProcessTriplesMaps(xml);

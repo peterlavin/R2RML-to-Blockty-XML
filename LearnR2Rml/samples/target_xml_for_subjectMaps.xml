@@ -1,4 +1,6 @@
 
+// Site for pretty printing XML...
+// https://www.samltool.com/prettyprint.php
 
 // No classes, NO termtype declared - working
 
@@ -323,7 +325,7 @@ seeing 2/more classes... 1
         </statement>
 
 
-============= Complex model, 2 POMs, multiple PMs and OMs ==================
+============= Complex POM model, 2 POMs, multiple PMs and OMs ==================
 
 
 

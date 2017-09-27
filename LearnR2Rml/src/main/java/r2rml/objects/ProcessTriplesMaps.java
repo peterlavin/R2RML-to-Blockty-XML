@@ -79,7 +79,7 @@ public class ProcessTriplesMaps {
 
 				/*
 				 * If this is the last of many, append previously created inner
-				 * triplesmaps. NB, no <is added here>
+				 * triplesmaps. NB, no <next> is added here
 				 */
 				if (savedTripmapBlockElem != null) {
 
@@ -156,7 +156,6 @@ public class ProcessTriplesMaps {
 
 		tripmapBlockElem.appendChild(tripMapFieldElm);
 
-		////
 		/*
 		 * Next process the Logical Table of this triplesmap
 		 */

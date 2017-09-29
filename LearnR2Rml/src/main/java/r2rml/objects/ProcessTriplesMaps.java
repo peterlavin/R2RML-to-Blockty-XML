@@ -87,9 +87,10 @@ public class ProcessTriplesMaps {
 
 				}
 
-				System.out.println("last... " + triplesMapLocalName);
-				PrettyPrintXML.printElement(basicTripmapBlockElem);
-
+				/*
+				 * System.out.println("last... " + triplesMapLocalName);
+				 * PrettyPrintXML.printElement(basicTripmapBlockElem);
+				 */
 			}
 
 			/*

@@ -30,16 +30,15 @@ public class RunImportMapping {
 	public static void main(String[] args) {
 
 		String mappingFile = "";
-		mappingFile = "/home/lavinpe/workspace/r2rml-editor/samples/example_2.ttl";
-		mappingFile = "/home/lavinpe/workspace/r2rml-editor/samples/cso_has_sql.ttl";
-		mappingFile = "/home/lavinpe/workspace/r2rml-editor/samples/2_tm_with_class_iri.ttl";
-		mappingFile = "/home/lavinpe/workspace/r2rml-editor/samples/3_tms_class_iri_none.ttl";
-		mappingFile = "/home/lavinpe/workspace/r2rml-editor/samples/4_tms_class_iri_blank_none.ttl";
-		mappingFile = "/home/lavinpe/workspace/r2rml-editor/samples/various_testing.ttl";
-		mappingFile = "/home/lavinpe/workspace/LearnR2Rml/LearnR2Rml/samples/various_testing.ttl";
+		mappingFile = "samples/example_2.ttl";
+		mappingFile = "samples/cso_has_sql.ttl";
+		mappingFile = "samples/2_tm_with_class_iri.ttl";
+		mappingFile = "samples/3_tms_class_iri_none.ttl";
+		mappingFile = "samples/4_tms_class_iri_blank_none.ttl";
+		mappingFile = "samples/various_testing.ttl";
+		mappingFile = "samples/various_testing.ttl";
 
-		// mappingFile = "/home/lavinpe/Downloads/r2rml-use-cases/mapping6.ttl";
-
+		
 		/*
 		 * Using code in r2rml model project (by Christophe Debruyne) to get a
 		 * full data model for the input r2rml mapping

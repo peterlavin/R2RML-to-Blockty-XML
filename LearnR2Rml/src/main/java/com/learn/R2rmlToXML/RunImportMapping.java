@@ -1,4 +1,4 @@
-package com.learn.LearnR2Rml;
+package com.learn.R2rmlToXML;
 
 import java.util.Map;
 import org.apache.jena.rdf.model.Resource;

@@ -1,4 +1,4 @@
-package com.learn.LearnR2Rml;
+package com.learn.R2rmlToXML;
 
 import junit.framework.Test;
 import junit.framework.TestCase;

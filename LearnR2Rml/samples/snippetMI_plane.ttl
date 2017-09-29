@@ -1,0 +1,64 @@
+ex:MIRogueNation#t=60,316 a so:Scene ;
+  time:hasBeginning [
+    a time:Instance ;
+    time:inTimePosition [
+      time:numericPosition "60"^^xsd:decimal ;
+    ] ;
+  ] ;
+  time:hasDuration [
+    a time:Duration ;
+    time:numericDuration "286" ;
+    time:unitType time:unitSecond ;
+  ] ;
+  time:hasEnd [
+    a time:Instance ;
+    time:inTimePosition [
+      time:numericPosition "316"^^xsd:decimal ;
+    ] ;
+  ] ;
+  # Skipping actions not related to talking.
+  :hasAction [
+    a   so:MultipleEntityAction ;
+    so:activity :Talking ;
+    so:actionSource :Brandt ;
+    so:actionTarget ( :Benji ) ; # Brackets means list. Therefore, in this case the conversation is between Brandt and Benji
+  ] , [
+    a   so:MultipleEntityAction ;
+    so:activity :Talking ;
+    so:actionSource :Luther ;
+    so:actionTarget ( :Brandt ) ;
+  ] , [
+    a   so:MultipleEntityAction ;
+    so:activity :Talking ;
+    so:actionSource :Luther ;
+    so:actionTarget ( :Benji ) ;
+  ] , [
+    a   so:SingleEntityAction ;
+    so:activity :Facepalm ;
+    so:portray :Brandt ;
+  ] , [
+    a   so:MultipleEntityAction ;
+    so:activity :Talking ;
+    so:actionSource :Brandt ;
+    so:actionTarget ( :Benji :Luther ) ; # Brandt is talking to both Benji and Luther
+  ] , [
+    a   so:MultipleEntityAction ;
+    so:activity :Talking ;
+    so:actionSource :Ethan ;
+    so:actionTarget ( :Benji :Brandt ) ;
+  ] , [
+    a   so:MultipleEntityAction ;
+    so:activity :Talking ;
+    so:actionSource :Ethan ;
+    so:actionTarget ( :Benji ) ;
+  ] , [
+    a   so:SingleEntityAction ;
+    so:activity :Shouting ; # Can we extract shouting as a form of talking?
+    so:portray :Ethan ;
+  ] , [
+    a   so:MultipleEntityAction ;
+    so:activity :Talking ;
+    so:actionSource :RussianGuy ;
+    so:actionTarget ( :Benji ) ;
+  ] ;
+  ma:hasRelatedLocation :Minsk .

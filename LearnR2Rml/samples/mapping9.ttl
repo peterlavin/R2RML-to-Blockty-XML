@@ -1,0 +1,43 @@
+# Mapping created using R2RML editor.
+  @prefix rr: <http://www.w3.org/ns/r2rml#> .
+  @prefix foaf: <http://xmlns.com/foaf/0.1/> .
+  @prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+  @prefix ex: <http://example.org/> .
+
+  <#TripleMap1>
+  rr:logicalTable [
+    rr:tableName "employees";
+  ];
+     rr:subjectMap [
+      rr:template "http://example.org/employee/{id}";
+      rr:class foaf:Person;
+      rr:class ex:Person;
+    ];
+
+     rr:predicateObjectMap [
+      rr:predicateMap [
+        rr:constant foaf:givenName;
+        rr:termType rr:IRI;
+      ];
+
+       rr:objectMap [
+        rr:column "first_name";
+        rr:termType rr:Literal;
+          rr:datatype xsd:string;
+      ];
+
+     ];
+    rr:predicateObjectMap [
+      rr:predicateMap [
+        rr:constant foaf:familyName;
+        rr:termType rr:IRI;
+      ];
+
+       rr:objectMap [
+        rr:column "last_name";
+        rr:termType rr:Literal;
+          rr:language "en";
+      ];
+
+     ];
+   .

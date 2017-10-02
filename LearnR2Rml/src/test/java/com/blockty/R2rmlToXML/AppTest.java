@@ -1,4 +1,4 @@
-package com.learn.R2rmlToXML;
+package com.blockty.R2rmlToXML;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
